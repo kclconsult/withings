@@ -13,7 +13,7 @@
     "express-session": "^1.15.3",
     "grant-express": "^3.8.0",
     "morgan": "^1.8.2",
-    "pug": "~2.0.0-beta11",
+    "pug": "^2.0.0-rc.2",
     "serve-favicon": "^2.4.3"
   }
 }

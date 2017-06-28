@@ -1,4 +1,5 @@
 var express = require('express');
+var session = require('express-session')
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -22,6 +23,23 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//////////Grant //////////
+
+var Grant = require('grant-express');
+var grant = new Grant(require('./config.json'));
+
+// REQUIRED:
+app.use(session({secret:'very secret', resave: true, saveUninitialized: true}))
+// mount grant
+app.use(grant)
+
+app.get('/handle_ihealth_callback', function (req, res) {
+  console.log(req.query)
+  res.end(JSON.stringify(req.query, null, 2))
+})
+
+///////////////////////////
+
 app.use('/', index);
 app.use('/users', users);
 
@@ -42,5 +60,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 module.exports = app;
