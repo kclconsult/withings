@@ -5,6 +5,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var request = require('request')
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -34,13 +35,30 @@ app.use(session({secret:'very secret', resave: true, saveUninitialized: true}))
 app.use(grant)
 
 app.get('/handle_ihealth_callback', function (req, res) {
-  console.log("Query: " + req.query)
+	
+  console.log(grant.config.ihealth);
+  
+  var sc = '0fc5bf91bf374fb796f0dc666a0d6420';
+  var sv = '1126e827d9b94845ac14f9435cdf13f1';
+  var start_time = '1342007016';
+  var end_time = '1498867200';
+  
+  console.log(start_time)
+  
+  request('http://sandboxapi.ihealthlabs.com/openapiv2/user/' + req.query.raw.UserID + '/bp.json/?client_id=' + grant.config.ihealth.key + '&client_secret=' + grant.config.ihealth.secret + '&redirect_uri=' + 'http://localhost:3000/bp_data' + '&access_token=' + req.query.raw.AccessToken + '&start_time=' + start_time + '&end_time=' + end_time + '&page_index=1&sc=' + sc + '&sv=' + sv, function (error, response, body) {
+    console.log('error:', error); 
+    console.log('statusCode:', response && response.statusCode); 
+    console.log('body:', body); 
+  });
   res.end(JSON.stringify(req.query, null, 2))
+  
 })
 
-app.get('/handle_twitter_callback', function (req, res) {
-  console.log(req.query)
-  res.end(JSON.stringify(req.query, null, 2))
+app.get('/bp_data', function (req, res) {
+	
+  console.log(req);
+  console.log(res);
+	
 })
 
 ///////////////////////////
