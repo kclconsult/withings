@@ -1,3 +1,9 @@
+https://github.com/simov/grant
+
+https://github.com/simov/grant/blob/master/config/oauth.json
+
+https://github.com/iHealthLabs/Sandbox-V2/blob/master/Library/ConnectToiHealthlabs.cs
+
 https://developer.ihealthlabs.eu/index.htm
 
 http://sandbox.ihealthlabs.com/developerdetailpage.htm?id=6240

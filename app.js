@@ -34,6 +34,11 @@ app.use(session({secret:'very secret', resave: true, saveUninitialized: true}))
 app.use(grant)
 
 app.get('/handle_ihealth_callback', function (req, res) {
+  console.log("Query: " + req.query)
+  res.end(JSON.stringify(req.query, null, 2))
+})
+
+app.get('/handle_twitter_callback', function (req, res) {
   console.log(req.query)
   res.end(JSON.stringify(req.query, null, 2))
 })
