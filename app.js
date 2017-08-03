@@ -34,22 +34,38 @@ app.use(session({secret:'very secret', resave: true, saveUninitialized: true}))
 // mount grant
 app.use(grant)
 
-app.get('/handle_ihealth_callback', function (req, res) {
+// http://localhost:3000/connect/ihealth/callback
+
+app.get('/handle_nokia_callback', function (req, res) {
 	
-  console.log(grant.config.ihealth);
+	console.log(req);
+	console.log(res);
+	
+	res.end(JSON.stringify(req.query, null, 2))
+	  
+});
+
+app.get('/handle_ihealth_callback', function (req, res) {
+
+  var urlA = 'user/' + req.query.raw.UserID;
+  var urlB = 'application'
+  var reqURL = 'http://sandboxapi.ihealthlabs.com/openapiv2/' + urlB;
   
   var sc = '0fc5bf91bf374fb796f0dc666a0d6420';
   var sv = '1126e827d9b94845ac14f9435cdf13f1';
   var start_time = '1342007016';
   var end_time = '1498867200';
   
-  console.log(start_time)
+  var fullURL = reqURL + '/bp.json/?client_id=' + grant.config.ihealth.key + '&client_secret=' + grant.config.ihealth.secret + '&redirect_uri=' + 'http://localhost:3000/bp_data' + '&access_token=' + req.query.raw.AccessToken + '&start_time=' + start_time + '&end_time=' + end_time + '&page_index=1&sc=' + sc + '&sv=' + sv;
   
-  request('http://sandboxapi.ihealthlabs.com/openapiv2/user/' + req.query.raw.UserID + '/bp.json/?client_id=' + grant.config.ihealth.key + '&client_secret=' + grant.config.ihealth.secret + '&redirect_uri=' + 'http://localhost:3000/bp_data' + '&access_token=' + req.query.raw.AccessToken + '&start_time=' + start_time + '&end_time=' + end_time + '&page_index=1&sc=' + sc + '&sv=' + sv, function (error, response, body) {
+  console.log(fullURL)
+  
+  request(fullURL, function (error, response, body) {
     console.log('error:', error); 
     console.log('statusCode:', response && response.statusCode); 
     console.log('body:', body); 
   });
+  
   res.end(JSON.stringify(req.query, null, 2))
   
 })
