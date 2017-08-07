@@ -50,43 +50,31 @@ const nokia_base = "https://developer.health.nokia.com/account/request_token";
 const nokia_callback = require("querystring").escape("http://localhost:3000/connect/nokia/callback");
 const nokia_consumer_key = "";
 const nokia_secret = "";
-var nokia_nonce = "";
-
-console.log(require("querystring").escape(require("querystring").escape("/")));
+const timestamp = (Math.floor(new Date() / 1000));
 
 crypto.randomBytes(16, function(err, buffer) {
-
-	nokia_nonce = buffer.toString('hex');
 	
-	var base_string = "oauth_callback=" + nokia_callback + "&oauth_consumer_key=" + nokia_consumer_key + "&oauth_nonce=" + nokia_nonce + "&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + (Math.floor(new Date() / 1000)) + "&oauth_version=1.0";
+	const nonce = buffer.toString('hex');
+	
+	var base_string = "oauth_callback=" + nokia_callback + "&oauth_consumer_key=" + nokia_consumer_key + "&oauth_nonce=" + nonce + "&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + timestamp + "&oauth_version=1.0";
 	
 	var base_signature_string = "GET&" + require("querystring").escape(nokia_base) + "&" + require("querystring").escape(base_string);
 	
-	console.log(base_signature_string);
-	
 	var hash = crypto.createHmac('sha1', nokia_secret + "&").update(base_signature_string).digest('base64');
 	
-	var oauth_signature = encodeURIComponent(new Buffer(hash).toString('base64'));
+	var oauth_signature = encodeURIComponent(hash);
 	
-	//console.log(oauth_signature);
+	var request_url = nokia_base + "?" + base_string + "&oauth_signature=" + oauth_signature;
 	
-	request(base_string + "&oauth_signature=" + oauth_signature, function (error, response, body) {
+	request(request_url, function (error, response, body) {
 	
-		//console.log('error:', error); 
-	    //console.log('statusCode:', response && response.statusCode); 
+		console.log('error:', error); 
+	    console.log('statusCode:', response && response.statusCode); 
 	    console.log('body:', body); 
 	
 	});
 	
 });
-
-//app.get('/bloop', function(req, res) {
-	
-	
-	
-	//res.end();
-
-//});
 
 app.get('/handle_ihealth_callback', function (req, res) {
 
