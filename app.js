@@ -46,35 +46,72 @@ app.get('/handle_nokia_callback', function (req, res) {
 	  
 });
 
-const nokia_base = "https://developer.health.nokia.com/account/request_token";
+
+const nokia_token_base = "https://developer.health.nokia.com/account/request_token";
 const nokia_callback = require("querystring").escape("http://localhost:3000/connect/nokia/callback");
 const nokia_consumer_key = "";
 const nokia_secret = "";
-const timestamp = (Math.floor(new Date() / 1000));
 
-crypto.randomBytes(16, function(err, buffer) {
+const nokia_user_base = "https://developer.health.nokia.com/account/authorize";
+
+function generateURL(base, key, secret, params, callback) {
 	
-	const nonce = buffer.toString('hex');
-	
-	var base_string = "oauth_callback=" + nokia_callback + "&oauth_consumer_key=" + nokia_consumer_key + "&oauth_nonce=" + nonce + "&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + timestamp + "&oauth_version=1.0";
-	
-	var base_signature_string = "GET&" + require("querystring").escape(nokia_base) + "&" + require("querystring").escape(base_string);
-	
-	var hash = crypto.createHmac('sha1', nokia_secret + "&").update(base_signature_string).digest('base64');
-	
-	var oauth_signature = encodeURIComponent(hash);
-	
-	var request_url = nokia_base + "?" + base_string + "&oauth_signature=" + oauth_signature;
-	
-	request(request_url, function (error, response, body) {
-	
-		console.log('error:', error); 
-	    console.log('statusCode:', response && response.statusCode); 
-	    console.log('body:', body); 
-	
+	crypto.randomBytes(16, function(err, buffer) {
+		
+		const timestamp = (Math.floor(new Date() / 1000));
+		const nonce = buffer.toString('hex');
+		
+		var base_string = params + "&oauth_consumer_key=" + key + "&oauth_nonce=" + nonce + "&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + timestamp + "&oauth_version=1.0";
+		
+		var base_signature_string = "GET&" + require("querystring").escape(base) + "&" + require("querystring").escape(base_string);
+		
+		var hash = crypto.createHmac('sha1', secret + "&").update(base_signature_string).digest('base64');
+		
+		var oauth_signature = encodeURIComponent(hash);
+		
+		var request_url = base + "?" + base_string + "&oauth_signature=" + oauth_signature;
+		
+		callback(request_url);
+		
 	});
 	
+}
+
+function processKeyValue(input) {
+	
+	key_value = [];
+	
+	for ( var entry in input.split("&") ) {
+		
+		key_value[input.split("&")[entry].split("=")[0]] = input.split("&")[entry].split("=")[1]
+		
+	}
+	
+	return key_value;
+	
+}
+
+app.get('/nokia', function (req, res) {
+	
+	generateURL(nokia_token_base, nokia_consumer_key, nokia_secret, "oauth_callback=" + nokia_callback, function(url) {
+		
+		request(url, function (error, response, body) {
+			
+			generateURL(nokia_user_base, nokia_consumer_key, nokia_secret + "&" + processKeyValue(body)["oauth_token_secret"], "oauth_token=" + processKeyValue(body)["oauth_token"], function(user_auth_url) {
+				
+				console.log(user_auth_url)
+		
+			});
+			
+		});
+		
+	})
+	
+	res.end();
+	
 });
+
+
 
 app.get('/handle_ihealth_callback', function (req, res) {
 
