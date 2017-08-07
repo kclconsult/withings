@@ -37,13 +37,15 @@ const nokia_user_base = "https://developer.health.nokia.com/account/authorize";
 const nokia_token_base = "https://developer.health.nokia.com/account/access_token";
 
 function sortObject(o) {
-    var sorted = {},
-    key, a = [];
+	
+    var sorted = {}, key, a = [];
 
     for (key in o) {
+    	
         if (o.hasOwnProperty(key)) {
-            a.push(key);
+        	a.push(key);    
         }
+    
     }
 
     a.sort();
@@ -51,6 +53,7 @@ function sortObject(o) {
     for (key = 0; key < a.length; key++) {
         sorted[a[key]] = o[a[key]];
     }
+    
     return sorted;
 }
 
@@ -58,14 +61,12 @@ function genQueryString(input_params) {
 	
 	var params = sortObject(input_params);
 	
-	console.log(params);
+	console.log("Params: " + JSON.stringify(params));
 	
 	var query_string = "";
 	
 	for ( var param in params ) {
-		
 		query_string += "oauth_" + param + "=" + params[param] + "&";
-		
 	}
 	
 	return query_string.substring(0, query_string.length - 1);
@@ -76,8 +77,10 @@ function generateURL(base, key, secret, additional_params, callback) {
 	
 	crypto.randomBytes(16, function(err, buffer) {
 		
-		const timestamp = (Math.floor(new Date() / 1000));
 		const nonce = buffer.toString('hex');
+		const timestamp = (Math.floor(new Date() / 1000));
+		
+		console.log("Generating url. Base: " + base + " Key: " + key + " Nonce: " + nonce + " Secret: " + secret + " Timestamp " + timestamp + " Params: " + JSON.stringify(additional_params));
 		
 		var default_params = [];
 		
@@ -90,11 +93,13 @@ function generateURL(base, key, secret, additional_params, callback) {
 		var base_signature_string = "GET&" + require("querystring").escape(base) + "&" + require("querystring").escape(genQueryString(
 		Object.assign(default_params, additional_params)));
 		
-		console.log(base_signature_string);
+		console.log("Hash base: " + base_signature_string);
 		
-		var hash = crypto.createHmac('sha1', secret + "&").update(base_signature_string).digest('base64');
+		var hash = crypto.createHmac('sha1', secret).update(base_signature_string).digest('base64');
 		
 		var oauth_signature = encodeURIComponent(hash);
+		
+		console.log("Generated signature: " + oauth_signature)
 		
 		default_params["signature"] = oauth_signature;
 		
@@ -111,39 +116,42 @@ function processKeyValue(input) {
 	key_value = [];
 	
 	for ( var entry in input.split("&") ) {
-		
 		key_value[input.split("&")[entry].split("=")[0]] = input.split("&")[entry].split("=")[1]
-		
 	}
 	
 	return key_value;
 	
 }
 
-app.get('/nokia', function (req, res) {
+function genURLFromToken(base_url, callback) {
 	
-	var token_params = [];
-	token_params["callback"] = nokia_callback;
-	generateURL(nokia_request_token_base, nokia_consumer_key, nokia_secret, token_params, function(url) {
+	var request_token_params = [];
+	request_token_params["callback"] = nokia_callback;
+	generateURL(nokia_request_token_base, nokia_consumer_key, nokia_secret + "&", request_token_params, function(request_token_url) {
 		
-		console.log(url);
-		
-		request(url, function (error, response, body) {
+		request(request_token_url, function (error, response, body) {
 			
-			console.log(body);
+			var params = [];
+			params["token"] = processKeyValue(body)["oauth_token"];
 			
-			var user_params = [];
-			user_params["token"] = processKeyValue(body)["oauth_token"];
+			var oauth_token_secret = processKeyValue(body)["oauth_token_secret"]
 			
-			generateURL(nokia_user_base, nokia_consumer_key, nokia_secret + "&" + processKeyValue(body)["oauth_token_secret"], user_params, function(user_auth_url) {
-				
-				console.log(user_auth_url)
+			generateURL(base_url, nokia_consumer_key, nokia_secret + "&" + oauth_token_secret, params, function(url) {
+			
+				callback(url);
 		
 			});
 			
 		});
 		
 	})
+}
+
+app.get('/nokia', function (req, res) {
+	
+	genURLFromToken(nokia_user_base, function(url) {
+		console.log(url);
+	});
 	
 	res.end();
 	
@@ -153,25 +161,17 @@ app.get('/connect/nokia/callback', function (req, res) {
 	
 	console.log(req.query.userid);
 	
-	generateURL(nokia_request_token_base, nokia_consumer_key, nokia_secret, "oauth_callback=" + nokia_callback, function(url) {
+	genURLFromToken(nokia_token_base, function(url) {
+		
+		console.log(url);
 		
 		request(url, function (error, response, body) {
-			
-			generateURL(nokia_token_base, nokia_consumer_key, nokia_secret + "&" + processKeyValue(body)["oauth_token_secret"], "oauth_token=" + processKeyValue(body)["oauth_token"], function(token_url) {
-				
-				console.log(token_url);
-				
-				/*request(token_url, function (error, response, body) {
-					
-					console.log(body)
-					
-				});*/
-		
-			});
-			
+			console.log("==================================")
+			console.log(body)
+			console.log("==================================")
 		});
 		
-	})
+	});
 	
 	res.end();
 	
