@@ -251,7 +251,40 @@ app.get('/dashboard/:id', function(req, res, next) {
 
 			request(url, function (error, response, body) {
 				
-				res.render('output', { content: body } );
+				body = body.replace(/"type":11/g, '"type": "Heart Pulse (bpm)"');
+				body = body.replace(/"type":9/g, '"type": "Diastolic Blood Pressure (mmHg)"');
+				body = body.replace(/"type":10/g, '"type": "Systolic Blood Pressure (mmHg)"');
+				body = body.replace(/"type":1/g, '"type": "Weight (kg)"');
+				
+				body = body.replace(/"category":1/g, '"category": "Real measurement"');
+				body = body.replace(/"category":2/g, '"category": "User objective"');
+				
+				body = body.replace(/"attrib":0/g, '"category": "The measuregroup has been captured by a device and is known to belong to this user (and is not ambiguous)"');
+				body = body.replace(/"attrib":1/g, '"category": "The measuregroup has been captured by a device but may belong to other users as well as this one (it is ambiguous)"');
+				body = body.replace(/"attrib":2/g, '"category": "The measuregroup has been entered manually for this particular user"');
+				body = body.replace(/"attrib":4/g, '"category": "The measuregroup has been entered manually during user creation (and may not be accurate)"');
+				body = body.replace(/"attrib":5/g, '"category": " Measure auto, it\'s only for the Blood Pressure Monitor. This device can make many measures and computed the best value"');
+				body = body.replace(/"attrib":7/g, '"category": "Measure confirmed. You can get this value if the user confirmed a detected activity"');
+				
+				parsedBody = JSON.parse(body)["body"]["measuregrps"];
+				
+				for (element in parsedBody) {
+					
+					var date = new Date(parseInt(parsedBody[element]["date"])*1000);
+					
+					var hours = date.getHours();
+					
+					var minutes = "0" + date.getMinutes();
+					
+					var seconds = "0" + date.getSeconds();
+
+					var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+					
+					parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+
+				}
+				
+				res.render('output', { content: JSON.stringify(parsedBody) } );
 				
 			});
 			
