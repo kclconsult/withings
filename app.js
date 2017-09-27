@@ -251,15 +251,13 @@ app.get('/dashboard/:id', function(req, res, next) {
 
 			request(url, function (error, response, body) {
 				
-				console.log(body);
+				res.render('output', { content: body } );
 				
 			});
 			
 		}, params);
     	
     });
-    
-    res.end();
     
 });
 
