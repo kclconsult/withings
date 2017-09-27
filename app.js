@@ -26,15 +26,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //
-
-const nokia_request_token_base = "https://developer.health.nokia.com/account/request_token";
 const nokia_callback = require("querystring").escape("http://localhost:3000/connect/nokia/callback");
 const nokia_consumer_key = "";
 const nokia_secret = "";
 
-const nokia_user_base = "https://developer.health.nokia.com/account/authorize";
+const nokia_request_token_base = "https://developer.health.nokia.com/account/request_token";
 
-const nokia_token_base = "https://developer.health.nokia.com/account/access_token";
+const nokia_authorisation_base = "https://developer.health.nokia.com/account/authorize";
+
+const nokia_access_token_base = "https://developer.health.nokia.com/account/access_token";
 
 const nokia_user_data = "http://api.health.nokia.com/measure";
 
@@ -123,16 +123,16 @@ function processKeyValue(input) {
 	
 }
 
-var oauth_token;
-var oauth_token_secret;
+var oauth_request_token;
+var oauth_request_token_secret;
 
-function genURLFromToken(base_url, callback, params = []) {
+function genURLFromRequestToken(base_url, callback, params = []) {
 	
-	getToken(function() {
+	getRequestToken(function() {
 		
-		params["token"] = oauth_token;
+		params["token"] = oauth_request_token;
 		
-		generateURL(base_url, nokia_consumer_key, nokia_secret + "&" + oauth_token_secret, params, function(url) {
+		generateURL(base_url, nokia_consumer_key, nokia_secret + "&" + oauth_request_token_secret, params, function(url) {
 			
 			callback(url);
 
@@ -142,9 +142,9 @@ function genURLFromToken(base_url, callback, params = []) {
 	
 }
 
-function getToken(callback) {
+function getRequestToken(callback) {
 	
-	if ( oauth_token == null && oauth_token_secret == null ) {
+	if ( oauth_request_token == null && oauth_request_token_secret == null ) {
 	
 		var request_token_params = [];
 		request_token_params["callback"] = nokia_callback;
@@ -152,11 +152,11 @@ function getToken(callback) {
 		
 			request(request_token_url, function (error, response, body) {
 			
-				oauth_token =  processKeyValue(body)["oauth_token"];
+				oauth_request_token =  processKeyValue(body)["oauth_token"];
 			
-				oauth_token_secret = processKeyValue(body)["oauth_token_secret"]
+				oauth_request_token_secret = processKeyValue(body)["oauth_token_secret"]
 				
-				callback();
+				callback(oauth_request_token, oauth_request_token_secret);
 			
 			});
 		
@@ -172,7 +172,7 @@ function getToken(callback) {
 
 app.get('/nokia', function (req, res) {
 	
-	genURLFromToken(nokia_user_base, function(url) {
+	genURLFromRequestToken(nokia_authorisation_base, function(url) {
 		console.log(url);
 	});
 	
@@ -181,20 +181,22 @@ app.get('/nokia', function (req, res) {
 });
 
 app.get('/connect/nokia/callback', function (req, res) {
-	
-	genURLFromToken(nokia_token_base, function(url) {
+	 
+	genURLFromRequestToken(nokia_access_token_base, function(url) {
 		
+		// Request access token using generated URL.
 		request(url, function (error, response, body) {
 			
-			oauth_token = processKeyValue(body)['oauth_token'];
-			oauth_token_secret = processKeyValue(body)['oauth_token_secret'];
+			oauth_request_token = processKeyValue(body)['oauth_token'];
+			oauth_request_token_secret = processKeyValue(body)['oauth_token_secret'];
 			
 			params = [];
 			params["user_id"] = req.query.userid;
 			params["action"] = "getmeas";
 			
-			genURLFromToken(nokia_user_data, function(url) {
+			genURLFromRequestToken(nokia_user_data, function(url) {
 				
+				// Request user data using generated URL.
 				console.log(url);
 				
 				request(url, function (error, response, body) {
@@ -211,6 +213,18 @@ app.get('/connect/nokia/callback', function (req, res) {
 	
 	res.end();
 	
+});
+
+app.get('/nokia/dashboard', function (req, res) {
+	
+	getRequestToken(function(token, secret) {
+		
+		
+		
+	});
+	
+	res.end();
+
 });
 
 ///////////////////////////
