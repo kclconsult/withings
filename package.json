@@ -13,7 +13,11 @@
     "express-session": "^1.15.3",
     "grant-express": "^3.8.0",
     "morgan": "^1.8.2",
+    "mysql2": "^1.4.2",
     "pug": "^2.0.0-rc.2",
-    "serve-favicon": "^2.4.3"
+    "sequelize": "^4.11.1",
+    "sequelize-cli": "^3.0.0",
+    "serve-favicon": "^2.4.3",
+    "sqlite": "^2.8.0"
   }
 }

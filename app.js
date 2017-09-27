@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var request = require('request');
 var crypto = require('crypto');
+var models  = require('./models');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -186,7 +187,8 @@ app.get('/connect/nokia/callback', function (req, res) {
 		
 		// Request access token using generated URL.
 		request(url, function (error, response, body) {
-			
+		
+			// Is overwritten with updated access token for final call (~MDC there's a neater way to do this).
 			oauth_request_token = processKeyValue(body)['oauth_token'];
 			oauth_request_token_secret = processKeyValue(body)['oauth_token_secret'];
 			
@@ -194,18 +196,27 @@ app.get('/connect/nokia/callback', function (req, res) {
 			params["user_id"] = req.query.userid;
 			params["action"] = "getmeas";
 			
-			genURLFromRequestToken(nokia_user_data, function(url) {
+			models.users.create({
+			     
+				 id: req.query.userid,
+				 
+			     token: oauth_request_token,
+				 
+				 secret: oauth_request_token_secret,
+				 
+			}, function() {
 				
-				// Request user data using generated URL.
-				console.log(url);
-				
-				request(url, function (error, response, body) {
+				genURLFromRequestToken(nokia_user_data, function(url) {
+
+					request(url, function (error, response, body) {
+						
+						console.log(body);
+						
+					});
 					
-					console.log(body);
-					
-				});
+				}, params);
 				
-			}, params);
+			});
 			
 		});
 		
@@ -215,16 +226,41 @@ app.get('/connect/nokia/callback', function (req, res) {
 	
 });
 
-app.get('/nokia/dashboard', function (req, res) {
-	
-	getRequestToken(function(token, secret) {
-		
-		
-		
-	});
-	
-	res.end();
+app.get('/dashboard/:id', function(req, res, next) {
 
+    var id = req.params.id;
+
+    models.users.findOne({
+
+      where: {
+
+        id: id
+
+      },
+
+    }).then(function(user) {
+    	
+    	oauth_request_token = user.token;
+    	oauth_request_token_secret = user.secret;
+    	
+    	params = [];
+    	params["user_id"] = id;
+		params["action"] = "getmeas";
+		
+    	genURLFromRequestToken(nokia_user_data, function(url) {
+
+			request(url, function (error, response, body) {
+				
+				console.log(body);
+				
+			});
+			
+		}, params);
+    	
+    });
+    
+    res.end();
+    
 });
 
 ///////////////////////////
