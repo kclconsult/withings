@@ -251,22 +251,23 @@ app.get('/dashboard/:id', function(req, res, next) {
 
 			request(url, function (error, response, body) {
 				
-				body = body.replace(/"type":1/g, '"type": "Weight (kg)"');
 				body = body.replace(/"type":4/g, '"type": "Height (meters)"');
 				body = body.replace(/"type":9/g, '"type": "Diastolic Blood Pressure (mmHg)"');
 				body = body.replace(/"type":10/g, '"type": "Systolic Blood Pressure (mmHg)"');
 				body = body.replace(/"type":11/g, '"type": "Heart Pulse (bpm)"');
-				
+				body = body.replace(/"type":1/g, '"type": "Weight (kg)"');
 				
 				body = body.replace(/"category":1/g, '"category": "Real measurement"');
 				body = body.replace(/"category":2/g, '"category": "User objective"');
 				
-				body = body.replace(/"attrib":0/g, '"category": "The measuregroup has been captured by a device and is known to belong to this user (and is not ambiguous)"');
+				body = body.replace(/"attrib":0/g, '"category": "The measuregroup has been captured by a device and is known to belong to this user \(and is not ambiguous\)"');
 				body = body.replace(/"attrib":1/g, '"category": "The measuregroup has been captured by a device but may belong to other users as well as this one (it is ambiguous)"');
 				body = body.replace(/"attrib":2/g, '"category": "The measuregroup has been entered manually for this particular user"');
 				body = body.replace(/"attrib":4/g, '"category": "The measuregroup has been entered manually during user creation (and may not be accurate)"');
-				body = body.replace(/"attrib":5/g, '"category": " Measure auto, it\'s only for the Blood Pressure Monitor. This device can make many measures and computed the best value"');
+				body = body.replace(/"attrib":5/g, '"category": "Measure auto, it\'s only for the Blood Pressure Monitor. This device can make many measures and computed the best value"');
 				body = body.replace(/"attrib":7/g, '"category": "Measure confirmed. You can get this value if the user confirmed a detected activity"');
+				
+				body = body.replace(/"unit"/g, '"Power of ten multiplier (unit)"');
 				
 				parsedBody = JSON.parse(body)["body"]["measuregrps"];
 				
