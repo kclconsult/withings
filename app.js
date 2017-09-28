@@ -251,10 +251,12 @@ app.get('/dashboard/:id', function(req, res, next) {
 
 			request(url, function (error, response, body) {
 				
-				body = body.replace(/"type":11/g, '"type": "Heart Pulse (bpm)"');
+				body = body.replace(/"type":1/g, '"type": "Weight (kg)"');
+				body = body.replace(/"type":4/g, '"type": "Height (meters)"');
 				body = body.replace(/"type":9/g, '"type": "Diastolic Blood Pressure (mmHg)"');
 				body = body.replace(/"type":10/g, '"type": "Systolic Blood Pressure (mmHg)"');
-				body = body.replace(/"type":1/g, '"type": "Weight (kg)"');
+				body = body.replace(/"type":11/g, '"type": "Heart Pulse (bpm)"');
+				
 				
 				body = body.replace(/"category":1/g, '"category": "Real measurement"');
 				body = body.replace(/"category":2/g, '"category": "User objective"');
