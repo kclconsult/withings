@@ -248,6 +248,8 @@ app.get('/notify', function(req, res, next) {
 	console.log(res);
 	console.log(next);
 	
+	res.end();
+	
 });
 
 app.get('/dashboard/:id', function(req, res, next) {
