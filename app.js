@@ -38,6 +38,7 @@ const nokia_authorisation_base = "https://developer.health.nokia.com/account/aut
 const nokia_access_token_base = "https://developer.health.nokia.com/account/access_token";
 
 const nokia_user_data = "http://api.health.nokia.com/measure";
+const subscription_base = "https://api.health.nokia.com/notify";
 
 function sortObject(o) {
 	
@@ -192,22 +193,38 @@ app.get('/connect/nokia/callback', function (req, res) {
 			oauth_request_token = processKeyValue(body)['oauth_token'];
 			oauth_request_token_secret = processKeyValue(body)['oauth_token_secret'];
 			
-			params = [];
-			params["user_id"] = req.query.userid;
-			params["action"] = "getmeas";
-			
-			models.users.create({
-			     
-				 id: req.query.userid,
-				 
-			     token: oauth_request_token,
-				 
-				 secret: oauth_request_token_secret,
-				 
-			}, function() {
+			models.users.findOrCreate({
 				
-				genURLFromRequestToken(nokia_user_data, function(url) {
-
+				where: {
+				
+					id: req.query.userid
+				
+				},
+				defaults: {
+				
+					id: req.query.userid,
+				    token: oauth_request_token,
+					secret: oauth_request_token_secret
+				
+				}
+				
+			}).error(function(err) {
+				
+				console.log(err);
+				
+			}).then(function() {
+				
+				params = [];
+				params["action"] = "subscribe";
+				params["user_id"] = req.query.userid;
+				params["callbackurl"] = encodeURIComponent("https://www.martinchapman.ddns.net/nokia/notify");
+				params["comment"] = "comment";
+				params["appli"] = 4;
+				
+				genURLFromRequestToken(subscription_base, function(url) {
+					
+					console.log(url);
+					
 					request(url, function (error, response, body) {
 						
 						console.log(body);
@@ -215,7 +232,6 @@ app.get('/connect/nokia/callback', function (req, res) {
 					});
 					
 				}, params);
-				
 			});
 			
 		});
@@ -223,6 +239,14 @@ app.get('/connect/nokia/callback', function (req, res) {
 	});
 	
 	res.end();
+	
+});
+
+app.get('/notify', function(req, res, next) {
+	
+	console.log(req);
+	console.log(res);
+	console.log(next);
 	
 });
 
