@@ -69,9 +69,12 @@ function genQueryString(input_params) {
 	
 	for ( var param in params ) {
 		
-		if ( param.indexOf("action") == -1 ) { 
+		if ( param.indexOf("action") == -1 && param.indexOf("user_id") == -1 && param.indexOf("callbackurl") == -1 && param.indexOf("comment") == -1 && param.indexOf("appli") == -1 ) { 
+		
 			query_string += "oauth_" + param + "=" + params[param] + "&"; 
+		
 		} else {
+			
 			query_string += param + "=" + params[param] + "&";
 		} 
 	
@@ -217,7 +220,7 @@ app.get('/connect/nokia/callback', function (req, res) {
 				params = [];
 				params["action"] = "subscribe";
 				params["user_id"] = req.query.userid;
-				params["callbackurl"] = encodeURIComponent("https://www.martinchapman.ddns.net/nokia/notify");
+				params["callbackurl"] = require("querystring").escape("http://www.martinchapman.co.uk/nokia.php");
 				params["comment"] = "comment";
 				params["appli"] = 4;
 				
@@ -239,6 +242,43 @@ app.get('/connect/nokia/callback', function (req, res) {
 	});
 	
 	res.end();
+	
+});
+
+app.get('/notify/:id', function(req, res, next) {
+	
+	var id = req.params.id;
+	
+	models.users.findOne({
+
+      where: {
+
+        id: id
+
+      },
+
+    }).then(function(user) {
+    	
+    	oauth_request_token = user.token;
+    	oauth_request_token_secret = user.secret;
+    	
+		params = [];
+		params["action"] = "list";
+		params["user_id"] = req.params.id;
+		
+		genURLFromRequestToken(subscription_base, function(url) {
+			
+			console.log(url);
+			
+			request(url, function (error, response, body) {
+				
+				console.log(body);
+				
+			});
+			
+		}, params);
+	
+    });
 	
 });
 
