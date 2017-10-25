@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //
-const nokia_callback = require("querystring").escape("http://localhost:3000/connect/nokia/callback");
+const nokia_callback = require("querystring").escape("http://martinchapman.ddns.net/nokia/connect/callback");
 const nokia_consumer_key = "";
 const nokia_secret = "";
 
@@ -175,7 +175,7 @@ function getRequestToken(callback) {
 	
 }
 
-app.get('/nokia', function (req, res) {
+app.get('/register', function (req, res) {
 	
 	genURLFromRequestToken(nokia_authorisation_base, function(url) {
 		console.log(url);
@@ -185,7 +185,7 @@ app.get('/nokia', function (req, res) {
 	
 });
 
-app.get('/connect/nokia/callback', function (req, res) {
+app.get('/connect/callback', function (req, res) {
 	 
 	genURLFromRequestToken(nokia_access_token_base, function(url) {
 		
@@ -290,7 +290,29 @@ app.get('/notify', function(req, res, next) {
 	
 	});
 	
-	
+	/*models.measures.create({
+		
+		value: "a",
+		type: "b",
+		multiplier: "c",
+		
+		groups: {
+			
+			grpid: "e",
+			category: "f",
+			date: "g"
+			
+		}
+		
+	}, {
+		
+		include: [{
+			
+			association: models.measures.associate
+		
+		}]
+		
+	});*/
 	
 	console.log(req.query);
 	

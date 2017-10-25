@@ -15,11 +15,14 @@ module.exports = function(sequelize, DataTypes) {
 			
 			onDelete: "CASCADE",
 			foreignKey: {
+				
 				allowNull: false
-			}
+			
+			},
+			as: "abc"
 		
-		});   
-	
+		});
+		
 	};
   
 	return measures;
