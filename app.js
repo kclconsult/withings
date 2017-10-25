@@ -285,8 +285,12 @@ app.get('/notify/:id', function(req, res, next) {
 app.get('/notify', function(req, res, next) {
 	
 	models.notifications.create({
+		
 		data: JSON.stringify(req.query)
+	
 	});
+	
+	
 	
 	console.log(req.query);
 	

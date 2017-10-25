@@ -1,8 +1,8 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var users = sequelize.define('notifications', {
+  var notifications = sequelize.define('notifications', {
     data: DataTypes.STRING
   });
-  return users;
+  return notifications;
 };
 // Temp definition
