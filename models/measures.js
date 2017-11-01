@@ -18,8 +18,7 @@ module.exports = function(sequelize, DataTypes) {
 				
 				allowNull: false
 			
-			},
-			as: "abc"
+			}
 		
 		});
 		

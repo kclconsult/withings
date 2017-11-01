@@ -220,7 +220,7 @@ app.get('/connect/callback', function (req, res) {
 				params = [];
 				params["action"] = "subscribe";
 				params["user_id"] = req.query.userid;
-				params["callbackurl"] = require("querystring").escape("http://www.martinchapman.co.uk/nokia.php");
+				params["callbackurl"] = require("querystring").escape("http://www.martinchapman.ddns.net/nokia.php");
 				params["comment"] = "comment";
 				params["appli"] = 4;
 				
@@ -290,7 +290,7 @@ app.get('/notify', function(req, res, next) {
 	
 	});
 	
-	/*models.measures.create({
+	models.measures.create({
 		
 		value: "a",
 		type: "b",
@@ -308,11 +308,11 @@ app.get('/notify', function(req, res, next) {
 		
 		include: [{
 			
-			association: models.measures.associate
+			include: models.measures
 		
 		}]
 		
-	});*/
+	});
 	
 	console.log(req.query);
 	
