@@ -177,13 +177,36 @@ function getRequestToken(callback) {
 
 app.get('/register', function (req, res) {
 	
+	oauth_request_token = null;
+	oauth_request_token_secret = null;
+	
 	genURLFromRequestToken(nokia_authorisation_base, function(url) {
-		console.log(url);
+		
+		res.render('raw', { output: "<a href='" + url + "'>" + url + ">" } );
+		
 	});
 	
-	res.end();
+	//res.end();
 	
 });
+
+function notificationSubscribe(params, callback) {
+	
+	genURLFromRequestToken(subscription_base, function(url) {
+		
+		console.log(url);
+		
+		request(url, function (error, response, body) {
+			
+			console.log(body);
+			
+			callback();
+			
+		});
+		
+	}, params);
+	
+}
 
 app.get('/connect/callback', function (req, res) {
 	 
@@ -220,21 +243,23 @@ app.get('/connect/callback', function (req, res) {
 				params = [];
 				params["action"] = "subscribe";
 				params["user_id"] = req.query.userid;
-				params["callbackurl"] = require("querystring").escape("http://www.martinchapman.ddns.net/nokia.php");
+				params["callbackurl"] = require("querystring").escape("http://www.martinchapman.co.uk/nokia.php");
 				params["comment"] = "comment";
 				params["appli"] = 4;
 				
-				genURLFromRequestToken(subscription_base, function(url) {
+				notificationSubscribe(params, function() {
 					
-					console.log(url);
+					params["appli"] = 1;
 					
-					request(url, function (error, response, body) {
+					notificationSubscribe(params, function() {
 						
-						console.log(body);
+						params["appli"] = 16;
 						
-					});
-					
-				}, params);
+						notificationSubscribe(params, function() {});
+						
+					})
+				})
+				
 			});
 			
 		});
@@ -244,6 +269,22 @@ app.get('/connect/callback', function (req, res) {
 	res.end();
 	
 });
+
+function listNotificationURLs(body) {
+	
+	urls = [];
+	
+	list = JSON.parse(body).body.profiles;
+	
+	for ( url in list ) {
+		
+		urls.push(list[url].callbackurl);
+		
+	}
+	
+	return urls;
+	
+}
 
 app.get('/notify/:id', function(req, res, next) {
 	
@@ -268,11 +309,9 @@ app.get('/notify/:id', function(req, res, next) {
 		
 		genURLFromRequestToken(subscription_base, function(url) {
 			
-			console.log(url);
-			
 			request(url, function (error, response, body) {
 				
-				console.log(body);
+				console.log(listNotificationURLs(body));
 				
 			});
 			
@@ -280,15 +319,69 @@ app.get('/notify/:id', function(req, res, next) {
 	
     });
 	
+	res.end();
+	
 });
 
-app.get('/notify', function(req, res, next) {
+app.get('/notify/:id/revoke', function(req, res, next) {
 	
-	models.notifications.create({
+	var id = req.params.id;
+	
+	models.users.findOne({
+
+      where: {
+
+        id: id
+
+      },
+
+    }).then(function(user) {
+    	
+    	oauth_request_token = user.token;
+    	oauth_request_token_secret = user.secret;
+    	
+		params = [];
+		params["action"] = "list";
+		params["user_id"] = req.params.id;
 		
-		data: JSON.stringify(req.query)
+		genURLFromRequestToken(subscription_base, function(url) {
+			
+			request(url, function (error, response, body) {
+				
+				notificationURLs = listNotificationURLs(body);
+				
+				params["action"] = "revoke";
+				
+				for ( notificationURL in notificationURLs ) {
+					
+					params["callbackurl"] = require("querystring").escape(notificationURLs[notificationURL]);
+					params["appli"] = 4;
+					
+					console.log(url);
+					
+					genURLFromRequestToken(subscription_base, function(url) {
+						
+						request(url, function (error, response, body) {
+							
+							console.log(body);
+							
+						});
+						
+					}, params);
+					
+				}
+				
+			});
+			
+		}, params);
 	
-	});
+    });
+	
+	res.end();
+	
+});
+
+app.get('/notifytemp', function(req, res, next) {
 	
 	models.measures.create({
 		
@@ -312,6 +405,20 @@ app.get('/notify', function(req, res, next) {
 		
 		}]
 		
+	});
+	
+	console.log(req.query);
+	
+	res.end();
+	
+});
+
+app.get('/notify', function(req, res, next) {
+	
+	models.notifications.create({
+		
+		data: JSON.stringify(req.query)
+	
 	});
 	
 	console.log(req.query);
