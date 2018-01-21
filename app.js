@@ -37,7 +37,8 @@ const nokia_authorisation_base = "https://developer.health.nokia.com/account/aut
 
 const nokia_access_token_base = "https://developer.health.nokia.com/account/access_token";
 
-const nokia_user_data = "http://api.health.nokia.com/measure";
+const nokia_user_data = "https://api.health.nokia.com/measure";
+const nokia_user_data_v2 = "https://api.health.nokia.com/v2/measure";
 const subscription_base = "https://api.health.nokia.com/notify";
 
 function sortObject(o) {
@@ -427,6 +428,69 @@ app.get('/notify', function(req, res, next) {
 	
 });
 
+function getData(id, user, address, action, extra_params, res) {
+	
+	oauth_request_token = user.token;
+	oauth_request_token_secret = user.secret;
+	
+	params = [];
+	params["user_id"] = id;
+	params["action"] = action;
+	
+	params.concat(extra_params);
+	
+	genURLFromRequestToken(address, function(url) {
+
+		request(url, function (error, response, body) {
+			
+			console.log(error);
+			
+			console.log(body);
+			
+			body = body.replace(/"type":4/g, '"type": "Height (meters)"');
+			body = body.replace(/"type":9/g, '"type": "Diastolic Blood Pressure (mmHg)"');
+			body = body.replace(/"type":10/g, '"type": "Systolic Blood Pressure (mmHg)"');
+			body = body.replace(/"type":11/g, '"type": "Heart Pulse (bpm)"');
+			body = body.replace(/"type":1/g, '"type": "Weight (kg)"');
+			
+			body = body.replace(/"category":1/g, '"category": "Real measurement"');
+			body = body.replace(/"category":2/g, '"category": "User objective"');
+			
+			body = body.replace(/"attrib":0/g, '"category": "The measuregroup has been captured by a device and is known to belong to this user \(and is not ambiguous\)"');
+			body = body.replace(/"attrib":1/g, '"category": "The measuregroup has been captured by a device but may belong to other users as well as this one (it is ambiguous)"');
+			body = body.replace(/"attrib":2/g, '"category": "The measuregroup has been entered manually for this particular user"');
+			body = body.replace(/"attrib":4/g, '"category": "The measuregroup has been entered manually during user creation (and may not be accurate)"');
+			body = body.replace(/"attrib":5/g, '"category": "Measure auto, it\'s only for the Blood Pressure Monitor. This device can make many measures and computed the best value"');
+			body = body.replace(/"attrib":7/g, '"category": "Measure confirmed. You can get this value if the user confirmed a detected activity"');
+			
+			body = body.replace(/"unit"/g, '"Power of ten multiplier (unit)"');
+			
+			parsedBody = JSON.parse(body)["body"]["measuregrps"];
+			
+			for (element in parsedBody) {
+				
+				var date = new Date(parseInt(parsedBody[element]["date"])*1000);
+				
+				var hours = date.getHours();
+				
+				var minutes = "0" + date.getMinutes();
+				
+				var seconds = "0" + date.getSeconds();
+
+				var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+				
+				parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+
+			}
+			
+			res.render('output', { content: JSON.stringify(parsedBody) } );
+			
+		});
+		
+	}, params);
+	
+}
+
 app.get('/dashboard/:id', function(req, res, next) {
 
     var id = req.params.id;
@@ -441,58 +505,52 @@ app.get('/dashboard/:id', function(req, res, next) {
 
     }).then(function(user) {
     	
-    	oauth_request_token = user.token;
-    	oauth_request_token_secret = user.secret;
+    		getData(id, user, nokia_user_data, "getmeas", null, res);
     	
-    	params = [];
-    	params["user_id"] = id;
-		params["action"] = "getmeas";
-		
-    	genURLFromRequestToken(nokia_user_data, function(url) {
+    });
+    
+});
 
-			request(url, function (error, response, body) {
-				
-				body = body.replace(/"type":4/g, '"type": "Height (meters)"');
-				body = body.replace(/"type":9/g, '"type": "Diastolic Blood Pressure (mmHg)"');
-				body = body.replace(/"type":10/g, '"type": "Systolic Blood Pressure (mmHg)"');
-				body = body.replace(/"type":11/g, '"type": "Heart Pulse (bpm)"');
-				body = body.replace(/"type":1/g, '"type": "Weight (kg)"');
-				
-				body = body.replace(/"category":1/g, '"category": "Real measurement"');
-				body = body.replace(/"category":2/g, '"category": "User objective"');
-				
-				body = body.replace(/"attrib":0/g, '"category": "The measuregroup has been captured by a device and is known to belong to this user \(and is not ambiguous\)"');
-				body = body.replace(/"attrib":1/g, '"category": "The measuregroup has been captured by a device but may belong to other users as well as this one (it is ambiguous)"');
-				body = body.replace(/"attrib":2/g, '"category": "The measuregroup has been entered manually for this particular user"');
-				body = body.replace(/"attrib":4/g, '"category": "The measuregroup has been entered manually during user creation (and may not be accurate)"');
-				body = body.replace(/"attrib":5/g, '"category": "Measure auto, it\'s only for the Blood Pressure Monitor. This device can make many measures and computed the best value"');
-				body = body.replace(/"attrib":7/g, '"category": "Measure confirmed. You can get this value if the user confirmed a detected activity"');
-				
-				body = body.replace(/"unit"/g, '"Power of ten multiplier (unit)"');
-				
-				parsedBody = JSON.parse(body)["body"]["measuregrps"];
-				
-				for (element in parsedBody) {
-					
-					var date = new Date(parseInt(parsedBody[element]["date"])*1000);
-					
-					var hours = date.getHours();
-					
-					var minutes = "0" + date.getMinutes();
-					
-					var seconds = "0" + date.getSeconds();
+app.get('/dashboard/:id/:date', function(req, res, next) {
 
-					var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-					
-					parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+    var id = req.params.id;
 
-				}
-				
-				res.render('output', { content: JSON.stringify(parsedBody) } );
-				
-			});
-			
-		}, params);
+    models.users.findOne({
+
+      where: {
+
+        id: id
+
+      },
+
+    }).then(function(user) {
+    	
+    	    params = []
+    	    params["date"] = req.params.date
+    		getData(id, user, nokia_user_data_v2, "getactivity", params, res);
+    	
+    });
+    
+});
+
+app.get('/dashboard/:id/:start/:end', function(req, res, next) {
+
+    var id = req.params.id;
+
+    models.users.findOne({
+
+      where: {
+
+        id: id
+
+      },
+
+    }).then(function(user) {
+    	
+    	    params = []
+    	    params["startdate"] = req.params.start
+    	    params["enddate"] = req.params.end
+    		getData(id, user, nokia_user_data_v2, "getintradayactivity", params, res);
     	
     });
     
