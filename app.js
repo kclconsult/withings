@@ -27,7 +27,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //
-const nokia_callback = require("querystring").escape("http://martinchapman.ddns.net/nokia/connect/callback");
+const chapman = "http://martinchapman.co.uk"
+const nokia_callback = require("querystring").escape(chapman + "/nokia/connect/callback");
 const nokia_consumer_key = "";
 const nokia_secret = "";
 
@@ -37,8 +38,26 @@ const nokia_authorisation_base = "https://developer.health.nokia.com/account/aut
 
 const nokia_access_token_base = "https://developer.health.nokia.com/account/access_token";
 
-const nokia_user_data = "https://api.health.nokia.com/measure";
-const nokia_user_data_v2 = "https://api.health.nokia.com/v2/measure";
+types = {}
+types["getactivity"] = "activities"
+types["getmeas"] = "measuregrps"
+types["getintradayactivity"] = "activities"
+
+urls = {}
+urls["getmeas"] = "https://api.health.nokia.com/measure"
+urls["getactivity"] = "https://api.health.nokia.com/v2/measure"
+urls["getintradayactivity"] = "https://api.health.nokia.com/v2/measure"
+	
+start = {}
+start["getmeas"] = "startdate"
+start["getactivity"] = "startdateymd"
+start["getintradayactivity"] = "startdate"
+		
+end = {}
+end["getmeas"] = "enddate"
+end["getactivity"] = "enddateymd"
+end["getintradayactivity"] = "enddate"
+
 const subscription_base = "https://api.health.nokia.com/notify";
 
 function sortObject(o) {
@@ -70,7 +89,7 @@ function genQueryString(input_params) {
 	
 	for ( var param in params ) {
 		
-		if ( param.indexOf("action") == -1 && param.indexOf("user_id") == -1 && param.indexOf("callbackurl") == -1 && param.indexOf("comment") == -1 && param.indexOf("appli") == -1 ) { 
+		if ( param.indexOf("action") == -1 && param.indexOf("user_id") == -1 && param.indexOf("callbackurl") == -1 && param.indexOf("comment") == -1 && param.indexOf("appli") == -1 && param.indexOf("start") == -1 && param.indexOf("end") == -1 && param.indexOf("type") == -1 ) { 
 		
 			query_string += "oauth_" + param + "=" + params[param] + "&"; 
 		
@@ -92,7 +111,7 @@ function generateURL(base, key, secret, additional_params, callback) {
 		const nonce = buffer.toString('hex');
 		const timestamp = (Math.floor(new Date() / 1000));
 		
-		var default_params = [];
+		var default_params = {};
 		
 		default_params["consumer_key"] = key;
 		default_params["nonce"] = nonce;
@@ -100,8 +119,9 @@ function generateURL(base, key, secret, additional_params, callback) {
 		default_params["timestamp"] = timestamp;
 		default_params["version"] = "1.0";
 		
-		var base_signature_string = "GET&" + require("querystring").escape(base) + "&" + require("querystring").escape(genQueryString(
-		Object.assign(default_params, additional_params)));
+		var base_signature_string = "GET&" + require("querystring").escape(base) + "&" + require("querystring").escape(genQueryString(Object.assign(default_params, additional_params)));
+		
+		console.log(base_signature_string)
 		
 		var hash = crypto.createHmac('sha1', secret).update(base_signature_string).digest('base64');
 		
@@ -132,7 +152,7 @@ function processKeyValue(input) {
 var oauth_request_token;
 var oauth_request_token_secret;
 
-function genURLFromRequestToken(base_url, callback, params = []) {
+function genURLFromRequestToken(base_url, callback, params = {}) {
 	
 	getRequestToken(function() {
 		
@@ -152,7 +172,7 @@ function getRequestToken(callback) {
 	
 	if ( oauth_request_token == null && oauth_request_token_secret == null ) {
 	
-		var request_token_params = [];
+		var request_token_params = {};
 		request_token_params["callback"] = nokia_callback;
 		generateURL(nokia_request_token_base, nokia_consumer_key, nokia_secret + "&", request_token_params, function(request_token_url) {
 		
@@ -183,7 +203,7 @@ app.get('/register', function (req, res) {
 	
 	genURLFromRequestToken(nokia_authorisation_base, function(url) {
 		
-		res.render('raw', { output: "<a href='" + url + "'>" + url + ">" } );
+		res.render('raw', { output: "<a href='" + url + "'>" + url + "</a>" } );
 		
 	});
 	
@@ -241,10 +261,10 @@ app.get('/connect/callback', function (req, res) {
 				
 			}).then(function() {
 				
-				params = [];
+				params = {};
 				params["action"] = "subscribe";
 				params["user_id"] = req.query.userid;
-				params["callbackurl"] = require("querystring").escape("http://www.martinchapman.co.uk/nokia.php");
+				params["callbackurl"] = require("querystring").escape(chapman + "/nokia.php");
 				params["comment"] = "comment";
 				params["appli"] = 4;
 				
@@ -304,7 +324,7 @@ app.get('/notify/:id', function(req, res, next) {
     	oauth_request_token = user.token;
     	oauth_request_token_secret = user.secret;
     	
-		params = [];
+		params = {};
 		params["action"] = "list";
 		params["user_id"] = req.params.id;
 		
@@ -341,7 +361,7 @@ app.get('/notify/:id/revoke', function(req, res, next) {
     	oauth_request_token = user.token;
     	oauth_request_token_secret = user.secret;
     	
-		params = [];
+		params = {};
 		params["action"] = "list";
 		params["user_id"] = req.params.id;
 		
@@ -428,16 +448,16 @@ app.get('/notify', function(req, res, next) {
 	
 });
 
-function getData(id, user, address, action, extra_params, res) {
+function getData(id, user, address, action, extra_params, res, jsonID) {
 	
 	oauth_request_token = user.token;
 	oauth_request_token_secret = user.secret;
 	
-	params = [];
+	params = {};
 	params["user_id"] = id;
 	params["action"] = action;
 	
-	params.concat(extra_params);
+	Object.assign(params, extra_params)
 	
 	genURLFromRequestToken(address, function(url) {
 
@@ -465,11 +485,11 @@ function getData(id, user, address, action, extra_params, res) {
 			
 			body = body.replace(/"unit"/g, '"Power of ten multiplier (unit)"');
 			
-			parsedBody = JSON.parse(body)["body"]["measuregrps"];
+			parsedBody = JSON.parse(body)["body"][jsonID];
 			
 			for (element in parsedBody) {
 				
-				var date = new Date(parseInt(parsedBody[element]["date"])*1000);
+				var date = new Date(parseInt(parsedBody[element]["date"]) * 1000);
 				
 				var hours = date.getHours();
 				
@@ -479,7 +499,7 @@ function getData(id, user, address, action, extra_params, res) {
 
 				var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
 				
-				parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+				parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
 
 			}
 			
@@ -491,7 +511,7 @@ function getData(id, user, address, action, extra_params, res) {
 	
 }
 
-app.get('/dashboard/:id', function(req, res, next) {
+app.get('/dashboard/:id/:action/:start/:end', function(req, res, next) {
 
     var id = req.params.id;
 
@@ -505,13 +525,16 @@ app.get('/dashboard/:id', function(req, res, next) {
 
     }).then(function(user) {
     	
-    		getData(id, user, nokia_user_data, "getmeas", null, res);
+    	    params = {}
+    	    params[start[req.params.action]] = req.params.start
+    	    params[end[req.params.action]] = req.params.end
+    		getData(id, user, urls[req.params.action], req.params.action, params, res, types[req.params.action]);
     	
     });
     
 });
 
-app.get('/dashboard/:id/:date', function(req, res, next) {
+app.get('/dashboard/:id/:action/:date', function(req, res, next) {
 
     var id = req.params.id;
 
@@ -525,15 +548,15 @@ app.get('/dashboard/:id/:date', function(req, res, next) {
 
     }).then(function(user) {
     	
-    	    params = []
+    	    params = {}
     	    params["date"] = req.params.date
-    		getData(id, user, nokia_user_data_v2, "getactivity", params, res);
+    		getData(id, user, urls[req.params.action], req.params.action, params, res, types[req.params.action]);
     	
     });
     
 });
 
-app.get('/dashboard/:id/:start/:end', function(req, res, next) {
+app.get('/dashboard/:id/:action', function(req, res, next) {
 
     var id = req.params.id;
 
@@ -546,11 +569,10 @@ app.get('/dashboard/:id/:start/:end', function(req, res, next) {
       },
 
     }).then(function(user) {
-    	
-    	    params = []
-    	    params["startdate"] = req.params.start
-    	    params["enddate"] = req.params.end
-    		getData(id, user, nokia_user_data_v2, "getintradayactivity", params, res);
+    		
+    		params = {}
+	    params["meastype"] = 11
+    		getData(id, user, urls[req.params.action], req.params.action, params, res, types[req.params.action]);
     	
     });
     
