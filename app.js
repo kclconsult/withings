@@ -448,6 +448,22 @@ app.get('/notify', function(req, res, next) {
 	
 });
 
+function validateDate(strDate) {
+	
+	var t = /^(?=.+([\/.-])..\1)(?=.{10}$)(?:(\d{4}).|)(\d\d).(\d\d)(?:.(\d{4})|)$/;
+
+	strDate.replace(t, function($, _, y, m, d, y2) {
+    
+		$ = new Date(y = y || y2, m, d);
+	    
+		t = $.getFullYear() != y || $.getMonth() != m || $.getDate() != d;
+	
+	});
+	
+	return !t;
+
+}
+
 function getData(id, user, address, action, extra_params, res, jsonID) {
 	
 	oauth_request_token = user.token;
@@ -463,44 +479,54 @@ function getData(id, user, address, action, extra_params, res, jsonID) {
 
 		request(url, function (error, response, body) {
 			
-			console.log(error);
+			//console.log(error);
 			
-			console.log(body);
+			//console.log(body);
 			
-			body = body.replace(/"type":4/g, '"type": "Height (meters)"');
-			body = body.replace(/"type":9/g, '"type": "Diastolic Blood Pressure (mmHg)"');
-			body = body.replace(/"type":10/g, '"type": "Systolic Blood Pressure (mmHg)"');
-			body = body.replace(/"type":11/g, '"type": "Heart Pulse (bpm)"');
-			body = body.replace(/"type":1/g, '"type": "Weight (kg)"');
+			parsedBody = ""
 			
-			body = body.replace(/"category":1/g, '"category": "Real measurement"');
-			body = body.replace(/"category":2/g, '"category": "User objective"');
-			
-			body = body.replace(/"attrib":0/g, '"category": "The measuregroup has been captured by a device and is known to belong to this user \(and is not ambiguous\)"');
-			body = body.replace(/"attrib":1/g, '"category": "The measuregroup has been captured by a device but may belong to other users as well as this one (it is ambiguous)"');
-			body = body.replace(/"attrib":2/g, '"category": "The measuregroup has been entered manually for this particular user"');
-			body = body.replace(/"attrib":4/g, '"category": "The measuregroup has been entered manually during user creation (and may not be accurate)"');
-			body = body.replace(/"attrib":5/g, '"category": "Measure auto, it\'s only for the Blood Pressure Monitor. This device can make many measures and computed the best value"');
-			body = body.replace(/"attrib":7/g, '"category": "Measure confirmed. You can get this value if the user confirmed a detected activity"');
-			
-			body = body.replace(/"unit"/g, '"Power of ten multiplier (unit)"');
-			
-			parsedBody = JSON.parse(body)["body"][jsonID];
-			
-			for (element in parsedBody) {
+			if ( body != undefined ) {
 				
-				var date = new Date(parseInt(parsedBody[element]["date"]) * 1000);
+				body = body.replace(/"type":4/g, '"type": "Height (meters)"');
+				body = body.replace(/"type":9/g, '"type": "Diastolic Blood Pressure (mmHg)"');
+				body = body.replace(/"type":10/g, '"type": "Systolic Blood Pressure (mmHg)"');
+				body = body.replace(/"type":11/g, '"type": "Heart Pulse (bpm)"');
+				body = body.replace(/"type":1/g, '"type": "Weight (kg)"');
 				
-				var hours = date.getHours();
+				body = body.replace(/"category":1/g, '"category": "Real measurement"');
+				body = body.replace(/"category":2/g, '"category": "User objective"');
 				
-				var minutes = "0" + date.getMinutes();
+				body = body.replace(/"attrib":0/g, '"category": "The measuregroup has been captured by a device and is known to belong to this user \(and is not ambiguous\)"');
+				body = body.replace(/"attrib":1/g, '"category": "The measuregroup has been captured by a device but may belong to other users as well as this one (it is ambiguous)"');
+				body = body.replace(/"attrib":2/g, '"category": "The measuregroup has been entered manually for this particular user"');
+				body = body.replace(/"attrib":4/g, '"category": "The measuregroup has been entered manually during user creation (and may not be accurate)"');
+				body = body.replace(/"attrib":5/g, '"category": "Measure auto, it\'s only for the Blood Pressure Monitor. This device can make many measures and computed the best value"');
+				body = body.replace(/"attrib":7/g, '"category": "Measure confirmed. You can get this value if the user confirmed a detected activity"');
 				
-				var seconds = "0" + date.getSeconds();
-
-				var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+				body = body.replace(/"unit"/g, '"Power of ten multiplier (unit)"');
 				
-				parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-
+				parsedBody = JSON.parse(body)["body"][jsonID];
+				
+				for (element in parsedBody) {
+					
+					if ( !validateDate(parsedBody[element]["date"].toString()) ) {
+						
+						var date = new Date(parseInt(parsedBody[element]["date"]) * 1000);
+						
+						var hours = date.getHours();
+						
+						var minutes = "0" + date.getMinutes();
+						
+						var seconds = "0" + date.getSeconds();
+		
+						var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+						
+						parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+					
+					}
+	
+				}
+			
 			}
 			
 			res.render('output', { content: JSON.stringify(parsedBody) } );
@@ -556,9 +582,9 @@ app.get('/dashboard/:id/:action/:date', function(req, res, next) {
     
 });
 
-app.get('/dashboard/:id/:action', function(req, res, next) {
-
-    var id = req.params.id;
+function queryAction(req, res, action) {
+	
+	var id = req.params.id;
 
     models.users.findOne({
 
@@ -571,10 +597,22 @@ app.get('/dashboard/:id/:action', function(req, res, next) {
     }).then(function(user) {
     		
     		params = {}
-	    params["meastype"] = 11
-    		getData(id, user, urls[req.params.action], req.params.action, params, res, types[req.params.action]);
+	    //params["meastype"] = 11
+    		getData(id, user, urls[action], action, params, res, types[action]);
     	
     });
+	
+}
+
+app.get('/dashboard/:id/:action', function(req, res, next) {
+
+    queryAction(req, res, req.params.action)
+    
+});
+
+app.get('/dashboard/:id/', function(req, res, next) {
+
+    queryAction(req, res, "getmeas")
     
 });
 
