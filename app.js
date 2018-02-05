@@ -27,10 +27,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //
+const config = require('./config');
 const chapman = "http://martinchapman.co.uk"
 const nokia_callback = require("querystring").escape(chapman + "/nokia/connect/callback");
-const nokia_consumer_key = "";
-const nokia_secret = "";
+const nokia_consumer_key = config.nokia_consumer_key;
+const nokia_secret = config.nokia_secret;
 
 const nokia_request_token_base = "https://developer.health.nokia.com/account/request_token";
 

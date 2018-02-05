@@ -1,3 +1,5 @@
+### Project specific ###
+config.js
 
 # Created by https://www.gitignore.io/api/node,macos,eclipse
 
@@ -147,6 +149,8 @@ typings/
 # dotenv environment variables file
 .env
 
-
+### sequelize ###
+*.sqlite
+config.json
 
 # End of https://www.gitignore.io/api/node,macos,eclipse
