@@ -1,3 +1,4 @@
+// Imports
 var express = require('express');
 var session = require('express-session')
 var path = require('path');
@@ -7,18 +8,20 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var request = require('request');
 
+// Environment variables
+require('dotenv').config()
+
+// Models
 var models = require('./models');
 
+// Libs
 const Util = require('./lib/util');
 const NokiaUtil = require('./lib/nokiaUtil');
 
-var register = require('./routes/register');
-var connect = require('./routes/connect');
-var dashboard = require('./routes/dashboard');
-var notify = require('./routes/notify');
-
+// Express app
 var app = express();
 
+// Session
 var session = require('express-session');
 app.use(session({
     resave: true,
@@ -26,9 +29,11 @@ app.use(session({
     secret: "secret"
 }));
 
+// Views
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// Default use
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -37,6 +42,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 ///////////////////////////
+
+// Routes
+var register = require('./routes/register');
+var connect = require('./routes/connect');
+var dashboard = require('./routes/dashboard');
+var notify = require('./routes/notify');
 
 app.use('/register', register)
 app.use('/connect', connect)
