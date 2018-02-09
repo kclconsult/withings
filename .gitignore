@@ -151,7 +151,6 @@ typings/
 
 ### sequelize ###
 *.sqlite
-config/
 config.json
 
 # End of https://www.gitignore.io/api/node,macos,eclipse
