@@ -56,8 +56,9 @@ router.get('/callback', function (req, res) {
 						
 						NokiaUtil.notificationSubscribe(req, res, params, function() {});
 						
-					})
-				})
+					});
+					
+				});
 				
 			});
 			

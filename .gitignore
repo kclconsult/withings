@@ -150,7 +150,7 @@ typings/
 .env
 
 ### sequelize ###
-*.sqlite
+*production.sqlite
 config.json
 
 # End of https://www.gitignore.io/api/node,macos,eclipse

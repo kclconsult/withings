@@ -6,6 +6,7 @@ var lint = require('mocha-eslint');
 var paths = [
   'bin',
   'lib',
+  'routes',
   'tests/**/*Test.js',
   '!tests/NotATest.js', // negation also works 
 ];

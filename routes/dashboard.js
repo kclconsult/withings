@@ -6,7 +6,7 @@ const Util = require('../lib/util');
 const NokiaUtil = require('../lib/nokiaUtil');
 var models = require('../models');
 
-function getData(req, res, id, user, address, action, extra_params, res, jsonID) {
+function getData(req, res, id, user, address, action, extra_params, jsonID) {
 	
 	if ( user ) {
 		
@@ -18,13 +18,13 @@ function getData(req, res, id, user, address, action, extra_params, res, jsonID)
 		params["user_id"] = id;
 		params["action"] = action;
 		
-		Object.assign(params, extra_params)
+		Object.assign(params, extra_params);
 		
 		NokiaUtil.genURLFromRequestToken(req, res, address, function(url) {
 	
 			request(url, function (error, response, body) {
 				
-				parsedBody = ""
+				parsedBody = "";
 				
 				if ( body != undefined ) {
 					
@@ -99,9 +99,9 @@ function queryAction(req, res, action) {
 
     }).then(function(user) {
     		
-    		params = {}
+    		params = {};
 	    //params["meastype"] = 11
-    		getData(req, res, id, user, config.URLS[action], action, params, res, config.TYPES[action]);
+    		getData(req, res, id, user, config.URLS[action], action, params, config.TYPES[action]);
     	
     });
 	
@@ -109,13 +109,13 @@ function queryAction(req, res, action) {
 
 router.get('/:id/', function(req, res, next) {
 
-    queryAction(req, res, "getmeas")
+    queryAction(req, res, "getmeas");
     
 });
 
 router.get('/:id/:action', function(req, res, next) {
 
-    queryAction(req, res, req.params.action)
+    queryAction(req, res, req.params.action);
     
 });
 
@@ -133,9 +133,9 @@ router.get('/:id/:action/:date', function(req, res, next) {
 
     }).then(function(user) {
     	
-    	    params = {}
-    	    params["date"] = req.params.date
-    		getData(req, res, id, user, config.URLS[req.params.action], req.params.action, params, res, config.TYPES[req.params.action]);
+    	    params = {};
+    	    params["date"] = req.params.date;
+    		getData(req, res, id, user, config.URLS[req.params.action], req.params.action, params, config.TYPES[req.params.action]);
     	
     });
     
@@ -155,10 +155,10 @@ router.get('/:id/:action/:start/:end', function(req, res, next) {
 
     }).then(function(user) {
     	
-    	    params = {}
-    	    params[config.START[req.params.action]] = req.params.start
-    	    params[config.END[req.params.action]] = req.params.end
-    		getData(req, res, id, user, config.URLS[req.params.action], req.params.action, params, res, config.TYPES[req.params.action]);
+    	    params = {};
+    	    params[config.START[req.params.action]] = req.params.start;
+    	    params[config.END[req.params.action]] = req.params.end;
+    		getData(req, res, id, user, config.URLS[req.params.action], req.params.action, params, config.TYPES[req.params.action]);
     	
     });
     
