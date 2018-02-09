@@ -7,14 +7,13 @@ router.get('/', function (req, res) {
 	
 	req.session.oauth_request_token = null;
 	req.session.oauth_request_token_secret = null;
+	req.session.save();
 	
 	NokiaUtil.genURLFromRequestToken(req, res, config.NOKIA_AUTHORISATION_BASE, function(url) {
 		
 		res.render('raw', { output: "<a href='" + url + "'>" + url + "</a>" } );
 		
 	});
-	
-	//res.end();
 	
 });
 

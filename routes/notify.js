@@ -20,6 +20,20 @@ function listNotificationURLs(body) {
 	
 }
 
+router.get('/', function(req, res, next) {
+	
+	models.notifications.create({
+		
+		data: JSON.stringify(req.query)
+	
+	});
+	
+	console.log(req.query);
+	
+	res.end();
+	
+});
+
 router.get('/:id', function(req, res, next) {
 	
 	var id = req.params.id;
@@ -83,7 +97,7 @@ router.get('/:id/revoke', function(req, res, next) {
 			
 			request(url, function (error, response, body) {
 				
-				notificationURLs = NokiaUtils.listNotificationURLs(body);
+				notificationURLs = listNotificationURLs(body);
 				
 				params["action"] = "revoke";
 				
@@ -147,20 +161,5 @@ router.get('/temp', function(req, res, next) {
 	res.end();
 	
 });
-
-router.get('/', function(req, res, next) {
-	
-	models.notifications.create({
-		
-		data: JSON.stringify(req.query)
-	
-	});
-	
-	console.log(req.query);
-	
-	res.end();
-	
-});
-
 
 module.exports = router;
