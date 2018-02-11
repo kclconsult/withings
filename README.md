@@ -1,8 +1,8 @@
 # Nokia Health
 
-[![Build Status](https://travis-ci.org/martinchapman/nokia-health.svg?branch=nokia)](https://travis-ci.org/martinchapman/nokia-health)
+[![Build Status](https://travis-ci.org/consult-kcl/nokia-health.svg?branch=nokia)](https://travis-ci.org/consult-kcl/nokia-health)
 
-Middleware designed to improve interaction with the Nokia Health API, and thus Nokia Health devices.
+Middleware designed to improve interactions with the Nokia Health API, and thus Nokia Health devices.
 
 ## Getting Started
 
