@@ -43,12 +43,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 ///////////////////////////
 
-// Pre-Route auth
+// Pre-route auth
 app.use(function (req, res, next) {
     
     var credentials = auth(req)
 
-    if (!credentials || credentials.name !== config.USERNAME || credentials.pass !== config.PASSWORD) {
+    if ( !credentials || credentials.name !== config.USERNAME || credentials.pass !== config.PASSWORD ) {
         
         res.status(401);
         res.header('WWW-Authenticate', 'Basic realm="example"');

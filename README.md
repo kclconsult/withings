@@ -11,7 +11,6 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 Before installing, [download and install Node.js](https://nodejs.org/en/download/).
-(Optional) Install [nodeenv](https://github.com/ekalinin/nodeenv)
 
 ### Installing
 
@@ -27,11 +26,14 @@ Change into the directory:
 cd nokia-health
 ```
 
-(Optional) From within the project folder, create a node virtual environment, and activate it:
+(Optional) From within the project folder, create a node virtual environment (within a python virtual environment), and activate it:
 
 ```
-nodeenv env
+virtualenv env
 . env/bin/activate
+pip install nodeenv
+nodeenv nenv
+. nenv/bin/activate
 ```
 
 Install dependencies:
@@ -77,6 +79,12 @@ npm test
 ```
 
 ## Deployment
+
+Run in production using NODE_ENV environment variable, e.g.:
+
+```
+NODE_ENV=production npm start 
+```
 
 Deployed systems should switch to a production database format (e.g. Postgres).
 

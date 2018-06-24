@@ -156,6 +156,7 @@ grant-config.json
 
 ### nodeenv ###
 env/
+nenv/
 
 
 # End of https://www.gitignore.io/api/node,macos,eclipse
