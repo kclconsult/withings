@@ -7,6 +7,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var request = require('request');
+var auth = require('basic-auth');
 
 // Environment variables
 require('dotenv').config()
@@ -15,8 +16,7 @@ require('dotenv').config()
 var models = require('./models');
 
 // Libs
-const Util = require('./lib/util');
-const NokiaUtil = require('./lib/nokiaUtil');
+const config = require('./lib/config');
 
 // Express app
 var app = express();
@@ -42,6 +42,25 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 ///////////////////////////
+
+// Pre-Route auth
+app.use(function (req, res, next) {
+    
+    var credentials = auth(req)
+
+    if (!credentials || credentials.name !== config.USERNAME || credentials.pass !== config.PASSWORD) {
+        
+        res.status(401);
+        res.header('WWW-Authenticate', 'Basic realm="example"');
+        res.send('Access denied');
+        
+    } else {
+        
+        next();
+    
+    }
+    
+});
 
 // Routes
 var register = require('./routes/register');
