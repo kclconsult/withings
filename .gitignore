@@ -154,5 +154,8 @@ grant-config.json
 ### sequelize ###
 *production.sqlite
 
+### nodeenv ###
+env/
+
 
 # End of https://www.gitignore.io/api/node,macos,eclipse

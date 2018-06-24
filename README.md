@@ -11,6 +11,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 Before installing, [download and install Node.js](https://nodejs.org/en/download/).
+(Optional) Install [nodeenv](https://github.com/ekalinin/nodeenv)
 
 ### Installing
 
@@ -26,6 +27,13 @@ Change into the directory:
 cd nokia-health
 ```
 
+(Optional) From within the project folder, create a node virtual environment, and activate it:
+
+```
+nodeenv env
+. env/bin/activate
+```
+
 Install dependencies:
 
 ```
@@ -38,7 +46,7 @@ For notification callbacks, `php/nokia.php` should also be publicly accessible v
 
 ## Usage
 
-From within the project folder, run with 
+From within the project folder, run with:
 
 ```
 npm start
