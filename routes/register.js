@@ -11,6 +11,7 @@ function renderURL(res, url) {
     res.render('raw', { output: "<a href='" + url + "'>" + url + "</a>" } );
     
 }
+
 router.get('/', function (req, res) {
 	
 	req.session.oauth_request_token = null;

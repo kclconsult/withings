@@ -11,6 +11,7 @@ function getData(req, res, id, user, address, action, extra_params, jsonID) {
 	if ( user ) {
 		
 		req.session.oauth_request_token = user.token;
+		req.session.oauth_refresh_token = user.refresh;
 		req.session.oauth_request_token_secret = user.secret;
 		req.session.save();
 		
@@ -36,7 +37,7 @@ function getData(req, res, id, user, address, action, extra_params, jsonID) {
 
 				parsedBody = "";
 				
-				if ( body != undefined ) {
+				if ( body != undefined && JSON.parse(body)["status"] == 0 ) {
 					
 					// ~MDC A mess...
 					body = body.replace(/"type":4/g, '"type": "Height (meters)"');
@@ -59,29 +60,39 @@ function getData(req, res, id, user, address, action, extra_params, jsonID) {
 					
 					parsedBody = JSON.parse(body)["body"][jsonID];
 					
-					for (element in parsedBody) {
+					for ( element in parsedBody ) {
 						
-						if ( !Util.validateDate(parsedBody[element]["date"].toString()) ) {
-							
-							var date = new Date(parseInt(parsedBody[element]["date"]) * 1000);
-							
-							var hours = date.getHours();
-							
-							var minutes = "0" + date.getMinutes();
-							
-							var seconds = "0" + date.getSeconds();
-			
-							var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-							
-							parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-						
-						}
+    						if ( parsedBody[element]["date"] != undefined ) {
+    						    
+    						    rawDate = parsedBody[element]["date"];
+    						
+    						} else {
+    						    
+    						    rawDate = element;
+    						    
+    						}
+    						    
+    						if ( !Util.validateDate(rawDate) ) {
+    							
+    							var date = new Date(parseInt(rawDate) * 1000);
+    							
+    							var hours = date.getHours();
+    							
+    							var minutes = "0" + date.getMinutes();
+    							
+    							var seconds = "0" + date.getSeconds();
+    			
+    							var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+    							
+    							parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    						
+    						}
 		
 					}
 				
 				}
 				
-				res.render('output', { content: JSON.stringify(parsedBody) } );
+				res.send( JSON.stringify(parsedBody) );
 				
 			});
 			
@@ -89,7 +100,7 @@ function getData(req, res, id, user, address, action, extra_params, jsonID) {
 	
 	} else {
 		
-		res.render('output', { content: JSON.stringify("User not found.") } );
+		res.send( "User not found." );
 		
 	}
 	
@@ -117,19 +128,19 @@ function queryAction(req, res, action) {
 	
 }
 
-router.get('/:id/', function(req, res, next) {
+router.post('/:id/', function(req, res, next) {
 
     queryAction(req, res, "getmeas");
     
 });
 
-router.get('/:id/:action', function(req, res, next) {
+router.post('/:id/:action', function(req, res, next) {
 
     queryAction(req, res, req.params.action);
     
 });
 
-router.get('/:id/:action/:date', function(req, res, next) {
+router.post('/:id/:action/:date', function(req, res, next) {
 
     var id = req.params.id;
 
@@ -151,7 +162,7 @@ router.get('/:id/:action/:date', function(req, res, next) {
     
 });
 
-router.get('/:id/:action/:start/:end', function(req, res, next) {
+router.post('/:id/:action/:start/:end', function(req, res, next) {
 
     var id = req.params.id;
 
