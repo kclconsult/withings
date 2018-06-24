@@ -18,6 +18,7 @@
     "morgan": "^1.8.2",
     "mysql2": "^1.5.3",
     "pug": "^2.0.3",
+    "querystring": "^0.2.0",
     "request": "^2.87.0",
     "sequelize": "^4.37.10",
     "sequelize-cli": "^4.0.0",

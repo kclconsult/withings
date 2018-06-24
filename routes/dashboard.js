@@ -15,15 +15,25 @@ function getData(req, res, id, user, address, action, extra_params, jsonID) {
 		req.session.save();
 		
 		params = {};
-		params["user_id"] = id;
+		
+		if (config.OAUTH_VERSION == 2) { 
+		    params["userid"] = id;
+		} else {
+		    params["user_id"] = id;
+		}
+		
 		params["action"] = action;
 		
 		Object.assign(params, extra_params);
 		
 		NokiaUtil.genURLFromRequestToken(req, res, address, function(url) {
-	
+		    
+		    console.log(url);
+		    
 			request(url, function (error, response, body) {
 				
+			    console.log(JSON.stringify(response) + " " + error + " " + body);
+
 				parsedBody = "";
 				
 				if ( body != undefined ) {

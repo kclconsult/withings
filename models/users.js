@@ -6,7 +6,8 @@ module.exports = function(sequelize, DataTypes) {
      type: DataTypes.INTEGER
     },
     token: DataTypes.STRING,
-    secret: DataTypes.STRING
+    secret: DataTypes.STRING,
+    refresh: DataTypes.STRING
   }, {
     classMethods: {
       associate: function(models) {
