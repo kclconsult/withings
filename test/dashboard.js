@@ -7,12 +7,12 @@ chai.use(chaiHttp);
 
 describe('dashboard', () => {
 	
-	describe('/GET dashboard ID', () => {
+	describe('/POST dashboard ID', () => {
 	
 		it('Dashboard should be reachable.', (done) => {
 			
 			chai.request(server)
-				.get('/dashboard/UserId')
+				.post('/dashboard/UserId')
 	            .end((err, res) => {
 	            	
 	            		res.should.have.status(200);
@@ -25,12 +25,12 @@ describe('dashboard', () => {
 	
 	});
 	
-	describe('/GET dashboard ID + ACTION', () => {
+	describe('/POST dashboard ID + ACTION', () => {
 		
 		it('Dashboard should be reachable.', (done) => {
 			
 			chai.request(server)
-				.get('/dashboard/UserId/Action')
+				.post('/dashboard/UserId/Action')
 	            .end((err, res) => {
 	            	
 	            		res.should.have.status(200);
@@ -43,12 +43,12 @@ describe('dashboard', () => {
 	
 	});
 	
-	describe('/GET dashboard ID + ACTION + DATE', () => {
+	describe('/POST dashboard ID + ACTION + DATE', () => {
 		
 		it('Dashboard should be reachable.', (done) => {
 			
 			chai.request(server)
-				.get('/dashboard/UserId/Action/Date')
+				.post('/dashboard/UserId/Action/Date')
 	            .end((err, res) => {
 	            	
 	            		res.should.have.status(200);
@@ -61,12 +61,12 @@ describe('dashboard', () => {
 	
 	});
 	
-	describe('/GET dashboard ID + ACTION + STARTDATE + ENDDATE', () => {
+	describe('/POST dashboard ID + ACTION + STARTDATE + ENDDATE', () => {
 		
 		it('Dashboard should be reachable.', (done) => {
 			
 			chai.request(server)
-				.get('/dashboard/UserId/Action/StartDate/EndDate')
+				.post('/dashboard/UserId/Action/StartDate/EndDate')
 	            .end((err, res) => {
 	            	
 	            		res.should.have.status(200);
