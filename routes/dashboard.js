@@ -33,8 +33,6 @@ function getData(req, res, id, user, address, action, extra_params, jsonID) {
 		    
 			request(url, function (error, response, body) {
 				
-			    console.log(JSON.stringify(response) + " " + error + " " + body);
-
 				parsedBody = "";
 				
 				if ( body != undefined && JSON.parse(body)["status"] == 0 ) {
@@ -64,30 +62,24 @@ function getData(req, res, id, user, address, action, extra_params, jsonID) {
 						
     						if ( parsedBody[element]["date"] != undefined ) {
     						    
-    						    rawDate = parsedBody[element]["date"];
-    						
-    						} else {
-    						    
-    						    rawDate = element;
-    						    
-    						}
-    						    
-    						if ( !Util.validateDate(rawDate) ) {
-    							
-    							var date = new Date(parseInt(rawDate) * 1000);
-    							
-    							var hours = date.getHours();
-    							
-    							var minutes = "0" + date.getMinutes();
-    							
-    							var seconds = "0" + date.getSeconds();
-    			
-    							var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-    							
-    							parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    						    if ( Util.unixTimestamp(parsedBody[element]["date"]) ) {
+                                    
+                                var date = new Date(parseInt(parsedBody[element]["date"]) * 1000);
+                                
+                                var hours = date.getHours();
+                                
+                                var minutes = "0" + date.getMinutes();
+                                
+                                var seconds = "0" + date.getSeconds();
+                
+                                var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                                
+                                parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+                            
+                            }
     						
     						}
-		
+    						
 					}
 				
 				}
@@ -129,7 +121,7 @@ function queryAction(req, res, action) {
 }
 
 router.post('/:id/', function(req, res, next) {
-
+    
     queryAction(req, res, "getmeas");
     
 });
@@ -175,7 +167,14 @@ router.post('/:id/:action/:start/:end', function(req, res, next) {
       },
 
     }).then(function(user) {
-    	
+        
+        if ( !config.START[req.params.action].includes("ymd") && (!Util.unixTimestamp(req.params.start) || !Util.unixTimestamp(req.params.end) ) ) {
+            
+            req.params.start = new Date(req.params.start).getTime() / 1000;
+            req.params.end = new Date(req.params.end).getTime() / 1000;
+            
+        }
+        
     	    params = {};
     	    params[config.START[req.params.action]] = req.params.start;
     	    params[config.END[req.params.action]] = req.params.end;
