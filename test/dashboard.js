@@ -2,6 +2,7 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../app');
 let should = chai.should();
+let config = require('../lib/config');
 
 chai.use(chaiHttp);
 
@@ -13,6 +14,7 @@ describe('dashboard', () => {
 			
 			chai.request(server)
 				.post('/dashboard/UserId')
+				.auth(config.USERNAME, config.PASSWORD)
 	            .end((err, res) => {
 	            	
 	            		res.should.have.status(200);
@@ -31,6 +33,7 @@ describe('dashboard', () => {
 			
 			chai.request(server)
 				.post('/dashboard/UserId/Action')
+				.auth(config.USERNAME, config.PASSWORD)
 	            .end((err, res) => {
 	            	
 	            		res.should.have.status(200);
@@ -49,6 +52,7 @@ describe('dashboard', () => {
 			
 			chai.request(server)
 				.post('/dashboard/UserId/Action/Date')
+				.auth(config.USERNAME, config.PASSWORD)
 	            .end((err, res) => {
 	            	
 	            		res.should.have.status(200);
@@ -67,6 +71,7 @@ describe('dashboard', () => {
 			
 			chai.request(server)
 				.post('/dashboard/UserId/Action/StartDate/EndDate')
+				.auth(config.USERNAME, config.PASSWORD)
 	            .end((err, res) => {
 	            	
 	            		res.should.have.status(200);

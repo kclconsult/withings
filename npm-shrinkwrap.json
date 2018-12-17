@@ -161,7 +161,7 @@
     },
     "aproba": {
       "version": "1.2.0",
-      "resolved": false,
+      "resolved": "https://registry.npmjs.org/aproba/-/aproba-1.2.0.tgz",
       "integrity": "sha512-Y9J6ZjXtoYh8RnXVCMOU/ttDmk1aBjunq9vO0ta5x85WDQiQfUF9sIPBITdbiiIVcBo03Hi3jMxigBtsddlXRw=="
     },
     "are-we-there-yet": {
@@ -778,7 +778,7 @@
     },
     "chownr": {
       "version": "1.0.1",
-      "resolved": false,
+      "resolved": "https://registry.npmjs.org/chownr/-/chownr-1.0.1.tgz",
       "integrity": "sha1-4qdQQqlVGQi+vSW4Uj1fl2nXkYE="
     },
     "ci-info": {
@@ -986,7 +986,7 @@
     },
     "console-control-strings": {
       "version": "1.1.0",
-      "resolved": false,
+      "resolved": "https://registry.npmjs.org/console-control-strings/-/console-control-strings-1.1.0.tgz",
       "integrity": "sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4="
     },
     "constantinople": {
@@ -1203,7 +1203,7 @@
     },
     "delegates": {
       "version": "1.0.0",
-      "resolved": false,
+      "resolved": "https://registry.npmjs.org/delegates/-/delegates-1.0.0.tgz",
       "integrity": "sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o="
     },
     "denque": {
@@ -1509,7 +1509,7 @@
     },
     "event-stream": {
       "version": "3.3.4",
-      "resolved": "http://registry.npmjs.org/event-stream/-/event-stream-3.3.4.tgz",
+      "resolved": "https://registry.npmjs.org/event-stream/-/event-stream-3.3.4.tgz",
       "integrity": "sha1-SrTJoPWlTbkzi0w02Gv86PSzVXE=",
       "dev": true,
       "requires": {
@@ -3825,13 +3825,13 @@
       "integrity": "sha1-yobR/ogoFpsBICCOPchCS524NCw="
     },
     "node-pre-gyp": {
-      "version": "0.10.2",
-      "resolved": "https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.10.2.tgz",
-      "integrity": "sha512-16lql9QTqs6KsB9fl3neWyZm02KxIKdI9FlJjrB0y7eMTP5Nyz+xalwPbOlw3iw7EejllJPmlJSnY711PLD1ug==",
+      "version": "0.10.3",
+      "resolved": "https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.10.3.tgz",
+      "integrity": "sha512-d1xFs+C/IPS8Id0qPTZ4bUT8wWryfR/OzzAFxweG+uLN85oPzyo2Iw6bVlLQ/JOdgNonXLCoRyqDzDWq4iw72A==",
       "requires": {
         "detect-libc": "^1.0.2",
         "mkdirp": "^0.5.1",
-        "needle": "^2.2.0",
+        "needle": "^2.2.1",
         "nopt": "^4.0.1",
         "npm-packlist": "^1.1.6",
         "npmlog": "^4.0.2",
