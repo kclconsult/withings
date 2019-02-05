@@ -45,21 +45,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Pre-route auth
 app.use(function (req, res, next) {
-    
+
     var credentials = auth(req)
 
     if ( !credentials || credentials.name !== config.USERNAME || credentials.pass !== config.PASSWORD ) {
-        
+
         res.status(401);
         res.header('WWW-Authenticate', 'Basic realm="example"');
         res.send('Access denied');
-        
+
     } else {
-        
+
         next();
-    
+
     }
-    
+
 });
 
 // Routes
@@ -67,12 +67,14 @@ var register = require('./routes/register');
 var connect = require('./routes/connect');
 var dashboard = require('./routes/dashboard');
 var notify = require('./routes/notify');
+var simulate = require('./routes/simulate');
 
 app.use('/register', register)
 app.use('/connect', connect)
 app.use('/dashboard', dashboard)
 app.use('/notify', notify)
-	
+app.use('/simulate', simulate)
+
 ///////////////////////////
 
 // catch 404 and forward to error handler
