@@ -43,25 +43,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 ///////////////////////////
 
-// Pre-route auth
-app.use(function (req, res, next) {
-
-    var credentials = auth(req)
-
-    if ( !credentials || credentials.name !== config.USERNAME || credentials.pass !== config.PASSWORD ) {
-
-        res.status(401);
-        res.header('WWW-Authenticate', 'Basic realm="example"');
-        res.send('Access denied');
-
-    } else {
-
-        next();
-
-    }
-
-});
-
 // Routes
 var register = require('./routes/register');
 var connect = require('./routes/connect');
