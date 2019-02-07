@@ -20,6 +20,7 @@ const config = require('./lib/config');
 
 // Express app
 var app = express();
+var router = express.Router();
 
 // Session
 var session = require('express-session');
@@ -50,11 +51,13 @@ var dashboard = require('./routes/dashboard');
 var notify = require('./routes/notify');
 var simulate = require('./routes/simulate');
 
-app.use('/register', register)
-app.use('/connect', connect)
-app.use('/dashboard', dashboard)
-app.use('/notify', notify)
-app.use('/simulate', simulate)
+router.use('/register', register)
+router.use('/connect', connect)
+router.use('/dashboard', dashboard)
+router.use('/notify', notify)
+router.use('/simulate', simulate)
+
+app.use('/nokia', router)
 
 ///////////////////////////
 
