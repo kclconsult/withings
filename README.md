@@ -80,10 +80,26 @@ npm test
 
 ## Deployment
 
+Sample web server (reverse proxy) configuration, e.g.:
+
+```
+location /nokia {
+
+      proxy_set_header        Host $host;
+      proxy_set_header        X-Real-IP $remote_addr;
+      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header        X-Forwarded-Proto $scheme;
+
+      proxy_pass          http://localhost:5001/nokia;
+      proxy_read_timeout  90;
+
+    }
+```
+
 Run in production using NODE_ENV environment variable, e.g.:
 
 ```
-NODE_ENV=production npm start 
+NODE_ENV=production npm start
 ```
 
 Deployed systems should switch to a production database format (e.g. Postgres).
@@ -98,12 +114,12 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/martinchapman/nokia-health/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/martinchapman/nokia-health/tags).
 
 ## Authors
 
 Produced as part of the [CONSULT project](https://consult.kcl.ac.uk/).
- 
+
 ![CONSULT project](https://consult.kcl.ac.uk/wp-content/uploads/sites/214/2017/12/overview-consult-768x230.png "CONSULT project")
 
 ## License
@@ -113,4 +129,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * Nokia's original health API [https://developer.health.nokia.com/api](https://developer.health.nokia.com/api).
-
