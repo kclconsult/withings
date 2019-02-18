@@ -13,21 +13,21 @@ function subscribeNotifications(req, res) {
     params = {};
     params["action"] = "subscribe";
     params["user_id"] = req.query.userid;
-    params["callbackurl"] = querystring.escape(config.CALLBACK_BASE + "/nokia.php");
+    params["callbackurl"] = querystring.escape(config.CALLBACK_BASE + "/nokia/notify");
     params["comment"] = "comment";
     params["appli"] = 4;
 
     nokiaUtil.notificationSubscribe(req, res, params, function() {
 
-        params["appli"] = 1;
+        //params["appli"] = 1;
 
-        nokiaUtil.notificationSubscribe(req, res, params, function() {
+        //nokiaUtil.notificationSubscribe(req, res, params, function() {
 
-            params["appli"] = 16;
+            //params["appli"] = 16;
 
-            nokiaUtil.notificationSubscribe(req, res, params, function() {});
+            //nokiaUtil.notificationSubscribe(req, res, params, function() {});
 
-        });
+        //});
 
     });
 
@@ -87,13 +87,13 @@ function storeAccessToken(req, res) {
 
             }, function (error, response, body) {
 
-                //subscribeNotifications(req, res);
+                subscribeNotifications(req, res);
 
             });
 
         } else {
 
-          //subscribeNotifications(req, res);
+          subscribeNotifications(req, res);
 
         }
 

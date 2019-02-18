@@ -51,10 +51,29 @@ var dashboard = require('./routes/dashboard');
 var notify = require('./routes/notify');
 var simulate = require('./routes/simulate');
 
-router.use('/register', register)
 router.use('/connect', connect)
-router.use('/dashboard', dashboard)
 router.use('/notify', notify)
+
+router.use('/', function(req, res, next) {
+
+  var credentials = auth(req)
+
+  if ( !credentials || credentials.name !== config.USERNAME || credentials.pass !== config.PASSWORD ) {
+
+      res.status(401);
+      res.header('WWW-Authenticate', 'Basic realm="forbidden"');
+      res.send('Access denied');
+
+  } else {
+
+      next();
+
+  }
+
+});
+
+router.use('/register', register)
+router.use('/dashboard', dashboard)
 router.use('/simulate', simulate)
 
 app.use('/nokia', router)
