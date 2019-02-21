@@ -123,7 +123,7 @@ function queryAction(req, res, action) {
 
 }
 
-router.post('/:patientID/', function(req, res, next) {
+router.post('/:patientID', function(req, res, next) {
 
     queryAction(req, res, "getmeas");
 

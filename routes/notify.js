@@ -37,7 +37,7 @@ router.post('/', function(req, res, next) {
 
 		console.log(req.query);
 
-		res.end();
+		res.sendStatus(200);
 
 });
 

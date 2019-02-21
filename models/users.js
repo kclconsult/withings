@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER
     },
     nokiaID: {
-      primaryKey: true,
+      primaryKey: false,
       type: DataTypes.INTEGER
     },
     token: DataTypes.STRING,
