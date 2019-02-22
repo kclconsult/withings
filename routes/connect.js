@@ -17,19 +17,7 @@ function subscribeNotifications(req, res) {
     params["comment"] = "comment";
     params["appli"] = 4;
 
-    nokiaUtil.notificationSubscribe(req, res, params, function() {
-
-        //params["appli"] = 1;
-
-        //nokiaUtil.notificationSubscribe(req, res, params, function() {
-
-            //params["appli"] = 16;
-
-            //nokiaUtil.notificationSubscribe(req, res, params, function() {});
-
-        //});
-
-    });
+    nokiaUtil.notificationSubscribe(req, res, params, function() {});
 
 }
 
