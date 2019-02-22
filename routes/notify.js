@@ -50,7 +50,7 @@ router.post('/', function(req, res, next) {
 		    params[config.END["getmeas"]] = req.body.enddate;
 	  		nokiaUtil.getData(req, res, user, config.URLS["getmeas"], "getmeas", params, function(data) {
 
-						console.log(data);
+						console.log(JSON.parse(nokiaUtil.translateNokiaData(data))["body"][config.TYPES["getmeas"][0]]);
 
 				});
 
