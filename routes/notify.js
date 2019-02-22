@@ -50,8 +50,32 @@ router.post('/', function(req, res, next) {
 		    params[config.END["getmeas"]] = req.body.enddate;
 	  		nokiaUtil.getData(req, res, user, config.URLS["getmeas"], "getmeas", params, function(data) {
 
-						console.log(JSON.parse(nokiaUtil.translateNokiaData(data))["body"][config.TYPES["getmeas"][0]]);
+						request.post(config.SENSOR_TO_FHIR_URL + "convert/bp", {
 
+								json: {
+
+										// TODO: Double check if dia and sys (and heart) ever come in different order from Nokia. Search for values instead?
+										subjectReference: user.patientID,
+										271650006: JSON.parse(nokiaUtil.translateNokiaData(data))["body"][config.TYPES["getmeas"]][0].measures[0],
+										271649006: JSON.parse(nokiaUtil.translateNokiaData(data))["body"][config.TYPES["getmeas"]][0].measures[1],
+
+								},
+
+						},
+						function (error, response, body) {
+
+								if (!error && response.statusCode == 200) {
+
+										 console.log(response.body)
+
+								} else {
+
+										 console.log(error)
+
+								}
+
+						});
+						
 				});
 
 	  });
