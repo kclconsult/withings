@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models');
 const config = require('../lib/config');
-const NokiaUtil = require('../lib/nokiaUtil');
+const nokiaUtil = require('../lib/nokiaUtil');
 const request = require('request');
 
 function listNotificationURLs(body) {
@@ -35,7 +35,26 @@ router.post('/', function(req, res, next) {
 
 		});
 
-		console.log(req.query);
+		models.users.findOne({
+
+		    where: {
+
+		      nokiaID: req.body.userid
+
+		    },
+
+	  }).then(function(user) {
+
+				params = {};
+		    params[config.START["getmeas"]] = req.body.startdate;
+		    params[config.END["getmeas"]] = req.body.enddate;
+	  		nokiaUtil.getData(req, res, user, config.URLS["getmeas"], "getmeas", params, function(data) {
+
+						console.log(data);
+
+				});
+
+	  });
 
 		res.sendStatus(200);
 
@@ -64,7 +83,7 @@ router.get('/:id', function(req, res, next) {
 				params["action"] = "list";
 				params["user_id"] = user.nokiaID;
 
-				NokiaUtil.genURLFromRequestToken(req, res, config.SUBSCRIPTION_BASE, function(url) {
+				nokiaUtil.genURLFromRequestToken(req, res, config.SUBSCRIPTION_BASE, function(url) {
 
 						request(url, function (error, response, body) {
 
@@ -99,7 +118,7 @@ router.get('/:id/revoke', function(req, res, next) {
 				params["action"] = "list";
 				params["user_id"] = user.nokiaID;
 
-				NokiaUtils.genURLFromRequestToken(config.SUBSCRIPTION_BASE, function(url) {
+				nokiaUtil.genURLFromRequestToken(config.SUBSCRIPTION_BASE, function(url) {
 
 						request(url, function (error, response, body) {
 
@@ -112,7 +131,7 @@ router.get('/:id/revoke', function(req, res, next) {
 										params["callbackurl"] = require("querystring").escape(notificationURLs[notificationURL]);
 										params["appli"] = 4;
 
-										NokiaUtils.genURLFromRequestToken(config.SUBSCRIPTION_BASE, function(url) {
+										nokiaUtil.genURLFromRequestToken(config.SUBSCRIPTION_BASE, function(url) {
 
 												request(url, function (error, response, body) {
 

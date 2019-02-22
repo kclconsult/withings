@@ -73,13 +73,11 @@ function getData(req, res, user, address, action, extra_params, jsonID) {
 
 function queryAction(req, res, action) {
 
-		var patientID = req.params.patientID;
-
 	  models.users.findOne({
 
 		    where: {
 
-		      patientID: patientID
+		      patientID: req.params.patientID
 
 		    },
 
@@ -141,6 +139,7 @@ router.get('/:patientID/:action/:start/:end', function(req, res, next) {
 
     }).then(function(user) {
 
+				// To accomodate different date formats for different endpoints.
 	      if ( !config.START[req.params.action].includes("ymd") && (!util.unixTimestamp(req.params.start) || !util.unixTimestamp(req.params.end) ) ) {
 
 	          req.params.start = new Date(req.params.start).getTime() / 1000;
