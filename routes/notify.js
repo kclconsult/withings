@@ -31,7 +31,7 @@ router.post('/', function(req, res, next) {
 
 		models.notifications.create({
 
-				data: JSON.stringify(req.query)
+				data: JSON.stringify(req.body)
 
 		});
 
@@ -47,35 +47,47 @@ router.post('/', function(req, res, next) {
 
 				params = {};
 		    params[config.START["getmeas"]] = req.body.startdate;
-		    params[config.END["getmeas"]] = req.body.enddate;
+		    params[config.END["getmeas"]] = req.body.enddate;query
 	  		nokiaUtil.getData(req, res, user, config.URLS["getmeas"], "getmeas", params, function(data) {
 
-						request.post(config.SENSOR_TO_FHIR_URL + "convert/bp", {
+						if ( data.length > 0 ) {
 
-								json: {
+							const parsedBody = JSON.parse(nokiaUtil.translateNokiaData(data))["body"];
+							const allMeasures = parsedBody[config.TYPES["getmeas"]][0];
 
-										// TODO: Double check if dia and sys (and heart) ever come in different order from Nokia. Search for values instead?
-										subjectReference: user.patientID,
-										271650006: JSON.parse(nokiaUtil.translateNokiaData(data))["body"][config.TYPES["getmeas"]][0].measures[0],
-										271649006: JSON.parse(nokiaUtil.translateNokiaData(data))["body"][config.TYPES["getmeas"]][0].measures[1],
+							// If this is a BP reading.
+							if ( parsedBody && allMeasures && allMeasures.measures[0].type.indexOf("Diastolic") >= 0 ) {
+
+								request.post(config.SENSOR_TO_FHIR_URL + "convert/bp", {
+
+										json: {
+
+												// TODO: Double check if dia and sys (and heart) ever come in different order from Nokia. Search for values instead?
+												subjectReference: user.patientID,
+												271650006: allMeasures.measures[0].value,
+												271649006: allMeasures.measures[1].value
+
+										},
 
 								},
+								function (error, response, body) {
 
-						},
-						function (error, response, body) {
+										if (!error && response.statusCode == 200) {
 
-								if (!error && response.statusCode == 200) {
+												 console.log(response.body)
 
-										 console.log(response.body)
+										} else {
 
-								} else {
+												 console.log(error)
 
-										 console.log(error)
+										}
 
-								}
+								});
 
-						});
-						
+							}
+
+						}
+
 				});
 
 	  });
