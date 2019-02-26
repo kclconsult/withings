@@ -43,6 +43,7 @@ router.get('/incomingBP', function(req, res, next) {
 								subjectReference: value[0],
 								271650006: value[1],
 								271649006: value[2],
+								8867-4: value[3]
 
 						},
 
