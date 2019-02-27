@@ -1,4 +1,4 @@
-# Nokia Health
+# Nokia Health (device-integration_nokia)
 
 [![Build Status](https://travis-ci.org/consult-kcl/nokia-health.svg?branch=nokia)](https://travis-ci.org/consult-kcl/nokia-health)
 
@@ -10,23 +10,44 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Before installing, [download and install Node.js](https://nodejs.org/en/download/).
+Before starting, [download and install python](https://www.python.org/downloads/), [pip](https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing), [virtualenv](https://virtualenv.pypa.io/en/latest/installation/) and [Node.js](https://nodejs.org/en/download/).
 
-### Installing
+### Other service communication
 
-Clone this repository:
+Sends messages to: sensor-fhir-mapper ([install](https://github.kcl.ac.uk/consult/sensor-fhir-mapper/blob/master/README.md)).
 
-```
-git clone https://github.com/martinchapman/nokia-health.git
-```
+## Download
 
-Change into the directory:
+(Recommended) [Create an SSH key](https://help.github.com/en/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) and clone this repository.
 
 ```
-cd nokia-health
+git clone git@github.kcl.ac.uk:consult/device-integration.git
 ```
 
-(Optional) From within the project folder, create a node virtual environment (within a python virtual environment), and activate it:
+(Alternative) Clone this repository using HTTPs, suppling username and password:
+
+```
+git clone https://github.kcl.ac.uk/consult/device-integration.git
+```
+## Documentation
+
+[View](https://github.kcl.ac.uk/pages/consult/device-integration_nokia/).
+
+## Editing
+
+This is an [express](https://expressjs.com/) (lightweight server) project. The majority of the logic is contained within [app.js](app.js), and in the routes and lib folders.
+
+Once a file is edited, stage, commit and push changes from the root folder as follows:
+
+```
+git add .
+git commit -m "[details of changes]"
+git push
+```
+
+## Running
+
+Ensure you are in the root folder. Create a node virtual environment (within a python virtual environment), and activate it:
 
 ```
 virtualenv env
@@ -39,36 +60,41 @@ nodeenv nenv
 Install dependencies:
 
 ```
-npm install
+cat requirements.txt | xargs npm install -g
 ```
 
-Modify `lib/config.js` to include your `NOKIA_CONSUMER_KEY`, `NOKIA_SECRET` and `CALLBACK_BASE`, a publicly accessible end-point to receive callbacks from Nokia's API.
+Modify `lib/config.js` to include the address of the [sensor-fhir-mapper service](https://github.kcl.ac.uk/consult/sensor-fhir-mapper), callback base and other API endpoints, e.g.:
 
-For notification callbacks, `php/nokia.php` should also be publicly accessible via your `CALLBACK_BASE`.
+```
+SENSOR_TO_FHIR_URL: '[sensor-fhir-mapper service]'
+```
 
-## Usage
+Create an environment file:
 
-From within the project folder, run with:
+```
+touch .env
+```
+
+Add the following information to this environment file using a text editor:
+
+```
+USERNAME="[username]"
+PASSWORD="[password]"
+NOKIA_CONSUMER_KEY="[key]"
+NOKIA_SECRET="[secret]"
+NOKIA_CLIENT_ID="[client]"
+NOKIA_CONSUMER_SECRET="[consumer]"
+```
+
+Where [username] and [password] are credentials to secure this service, and [key], [secret], [client] and [consumer] are your Nokia details.
+
+Run server:
 
 ```
 npm start
 ```
 
-The app runs by default on port 5001.
-
-Receive authorisation to query a user's Nokia device data by having them visit the URL generated at
-
-```
-http://localhost:5001/register
-```
-
-and authorise your application.
-
-Then, retrieve an initial read of a user's body measures by visiting:
-
-```
-http://localhost:5001/dashboard/<userId>
-```
+The server runs by default on port 3000. Visit localhost:3000/[route] to test changes to GET endpoints and use software such as [Postman](https://www.getpostman.com/) to test changes to POST (and other) endpoints.
 
 ## Running the tests
 
@@ -80,6 +106,16 @@ npm test
 
 ## Deployment
 
+Running the software on a server is the same as running it locally: clone and run the project on a remote machine. One can make local changes, push them and then pull them on the remote server.
+
+Run in production using NODE_ENV environment variable, e.g.:
+
+```
+NODE_ENV=production npm start
+```
+
+Deployed systems should switch to a production database format (e.g. Postgres).
+
 Sample web server (reverse proxy) configuration, e.g.:
 
 ```
@@ -90,19 +126,11 @@ location /nokia {
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header        X-Forwarded-Proto $scheme;
 
-      proxy_pass          http://localhost:5001/nokia;
+      proxy_pass          http://localhost:3000/nokia;
       proxy_read_timeout  90;
 
     }
 ```
-
-Run in production using NODE_ENV environment variable, e.g.:
-
-```
-NODE_ENV=production npm start
-```
-
-Deployed systems should switch to a production database format (e.g. Postgres).
 
 ## Built With
 

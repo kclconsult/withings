@@ -5,6 +5,12 @@ const config = require('../lib/config');
 var models = require('../models');
 var async = require('async');
 
+/**
+ * @api {get} /simulate/incomingBP Simulate a set of incoming blood pressure values.
+ * @apiName simulateBP
+ * @apiGroup Simulate
+ *
+ */
 router.get('/incomingBP', function(req, res, next) {
 
 		simulatedBPValues = [["3", 83,	107, 58],
