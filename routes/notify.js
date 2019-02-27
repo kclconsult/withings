@@ -9,11 +9,15 @@ function listNotificationURLs(body) {
 
 		urls = [];
 
-		list = JSON.parse(body).body.profiles;
+		if ( body.length > 0 ) {
 
-		for ( url in list ) {
+			list = JSON.parse(body).body.profiles;
 
-			urls.push(list[url].callbackurl);
+			for ( url in list ) {
+
+				urls.push(list[url].callbackurl);
+
+			}
 
 		}
 
@@ -47,7 +51,7 @@ router.post('/', function(req, res, next) {
 
 				params = {};
 		    params[config.START["getmeas"]] = req.body.startdate;
-		    params[config.END["getmeas"]] = req.body.enddate;query
+		    params[config.END["getmeas"]] = req.body.enddate;
 	  		nokiaUtil.getData(req, res, user, config.URLS["getmeas"], "getmeas", params, function(data) {
 
 						if ( data.length > 0 ) {
