@@ -69,7 +69,8 @@ router.post('/', function(req, res, next) {
 												// TODO: Double check if dia and sys (and heart) ever come in different order from Nokia. Search for values instead?
 												subjectReference: user.patientID,
 												271650006: allMeasures.measures[0].value,
-												271649006: allMeasures.measures[1].value
+												271649006: allMeasures.measures[1].value,
+												"8867-4": allMeasures.measures[1].value
 
 										},
 
