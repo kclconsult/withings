@@ -6,12 +6,14 @@ const Util = require('../lib/util');
 const crypto = require('crypto');
 const NOKIA_CALLBACK = config.CALLBACK_BASE + "/nokia/connect/callback";
 
-function renderURL(res, url) {
-
-    res.render('raw', { output: "<a href='" + url + "'>" + url + "</a>" } );
-
-}
-
+/**
+ * @api {get} /register/:patientId Register a patient ID against a device.
+ * @apiName registerPatient
+ * @apiGroup Register
+ *
+ * @apiParam {Number} patientId The ID associated with a patient, and their data, within the system.
+ *
+ */
 router.get('/:patientID', function (req, res) {
 
     req.session.patientID = req.params.patientID;
@@ -27,7 +29,7 @@ router.get('/:patientID', function (req, res) {
 
   	        var url = config.NOKIA_AUTHORISATION_BASE_V2 + "?response_type=code&redirect_uri=" + NOKIA_CALLBACK + "&client_id=" + config.NOKIA_CLIENT_ID + "&scope=user.info,user.metrics,user.activity&state=" + state;
 
-  	        renderURL(res, url);
+  	        res.redirect(url);
 
   	    });
 
@@ -35,7 +37,7 @@ router.get('/:patientID', function (req, res) {
 
   	    NokiaUtil.genURLFromRequestToken(req, res, config.NOKIA_AUTHORISATION_BASE, function(url) {
 
-  	        renderURL(res, url);
+  	        res.redirect(url);
 
   	    });
 
