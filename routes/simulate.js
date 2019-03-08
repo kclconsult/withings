@@ -1,17 +1,39 @@
-var express = require('express');
-var request = require('request');
-var router = express.Router();
-const config = require('../lib/config');
-var models = require('../models');
-var async = require('async');
+const express = require('express');
+const request = require('request');
+const router = express.Router();
+const async = require('async');
 
-/**
- * @api {get} /simulate/incomingBP Simulate a set of incoming blood pressure values.
- * @apiName simulateBP
- * @apiGroup Simulate
- *
- */
-router.get('/incomingBP', function(req, res, next) {
+const models = require('../models');
+
+const config = require('../lib/config');
+
+module.exports = function(messageObject) {
+
+	/**
+	 * @api {get} /simulate/simulateMass Simulate mass of incoming data values (currently does not exit).
+	 * @apiName simulateMass
+	 * @apiGroup Simulate
+	 *
+	 */
+	router.get('/simulateMass', function(req, res, next) {
+
+		async.forever(function(next) {
+
+			messageObject.send("", 'x'.repeat(10*1024*1024)).then(() => next());
+
+		});
+
+	});
+
+	/**
+	 * @api {get} /simulate/incomingBP Simulate a set of incoming blood pressure values.
+	 * @apiName simulateBP
+	 * @apiGroup Simulate
+	 *
+	 */
+	router.get('/incomingBP', function(req, res, next) {
+
+		var x = 0;
 
 		simulatedBPValues = [["3", 83,	107, 58],
 													["3",	83,	107, 58],
@@ -42,41 +64,24 @@ router.get('/incomingBP', function(req, res, next) {
 
 		async.eachSeries(simulatedBPValues, function (value, next){
 
-				request.post(config.SENSOR_TO_FHIR_URL + "convert/bp", {
+			var json = {
+					"id": "t" + Date.now(),
+					"subjectReference": value[0],
+					"271650006": value[1],
+					"271649006": value[2],
+					"8867-4": value[3]
+			};
 
-						json: {
-
-								"id": "t" + Date.now(),
-								"subjectReference": value[0],
-								"271650006": value[1],
-								"271649006": value[2],
-								"8867-4": value[3]
-
-						},
-
-				},
-				function (error, response, body) {
-
-						if (!error && response.statusCode == 200) {
-
-								 console.log(response.body)
-
-						} else {
-
-								 console.log(error)
-
-						}
-
-						next();
-
-				});
+			messageObject.send(config.SENSOR_TO_FHIR_URL + "convert/bp", json).then(() => next());
 
 		}, function(err) {
 
-					res.sendStatus(200);
+			res.sendStatus(200);
 
 		});
 
-});
+	});
 
-module.exports = router;
+	return router;
+
+}

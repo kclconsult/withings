@@ -17,6 +17,7 @@ var models = require('./models');
 
 // Libs
 const config = require('./lib/config');
+const QueueMessage = require('./lib/queueMessage');
 
 // Express app
 var app = express();
@@ -25,9 +26,9 @@ var router = express.Router();
 // Session
 var session = require('express-session');
 app.use(session({
-    resave: true,
-    saveUninitialized: true,
-    secret: "secret"
+  resave: true,
+  saveUninitialized: true,
+  secret: "secret"
 }));
 
 // Views
@@ -51,6 +52,35 @@ var dashboard = require('./routes/dashboard');
 var notify = require('./routes/notify');
 var simulate = require('./routes/simulate');
 
+// Route setup involving async
+function init() {
+
+  if ( config.MESSAGE_QUEUE == true ) {
+
+    var amqp = require('amqplib');
+    var QueueMessage = require('./lib/queueMessage');
+
+    // Return AMQP connect Promise from init.
+    return amqp.connect('amqp://localhost').then(function(connection) {
+
+      router.use('/simulate', simulate(new QueueMessage(connection, "device-integration_nokia-sensor-fhir-mapper")));
+
+    }).catch(console.warn);
+
+    // .finally(function() { conn.close(); });
+
+  } else {
+
+    var HTTPMessage = require('./lib/httpMessage');
+    router.use('/simulate', simulate(new HTTPMessage()));
+    return Promise.resolve();
+
+  }
+
+}
+
+// Non-async route setup
+
 router.use('/connect', connect)
 router.use('/notify', notify)
 
@@ -60,13 +90,13 @@ router.use('/', function(req, res, next) {
 
   if ( !credentials || credentials.name !== config.USERNAME || credentials.pass !== config.PASSWORD ) {
 
-      res.status(401);
-      res.header('WWW-Authenticate', 'Basic realm="forbidden"');
-      res.send('Access denied');
+    res.status(401);
+    res.header('WWW-Authenticate', 'Basic realm="forbidden"');
+    res.send('Access denied');
 
   } else {
 
-      next();
+    next();
 
   }
 
@@ -74,7 +104,7 @@ router.use('/', function(req, res, next) {
 
 router.use('/register', register)
 router.use('/dashboard', dashboard)
-router.use('/simulate', simulate)
+
 
 app.use('/nokia', router)
 
@@ -97,5 +127,10 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// Start app once async init done.
+init()
+    .then(() => app.listen(3000))
+    .catch(err=>console.error(err));
 
 module.exports = app;
