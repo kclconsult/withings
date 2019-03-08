@@ -66,7 +66,7 @@ function init() {
 
     }).catch(console.warn);
 
-    // .finally(function() { conn.close(); });
+    // TODO: .finally(function() { conn.close(); });
 
   } else {
 

@@ -65,6 +65,7 @@ module.exports = function(messageObject) {
 		async.eachSeries(simulatedBPValues, function (value, next){
 
 			var json = {
+					"reading": "hr",
 					"id": "t" + Date.now(),
 					"subjectReference": value[0],
 					"271650006": value[1],
