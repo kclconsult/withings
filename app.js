@@ -17,7 +17,6 @@ var models = require('./models');
 
 // Libs
 const config = require('./lib/config');
-const QueueMessage = require('./lib/queueMessage');
 
 // Express app
 var app = express();
@@ -58,7 +57,7 @@ function init() {
   if ( config.MESSAGE_QUEUE == true ) {
 
     var amqp = require('amqplib');
-    var QueueMessage = require('./lib/queueMessage');
+    var QueueMessage = require('./lib/messages/queueMessage');
 
     // Return AMQP connect Promise from init.
     return amqp.connect('amqp://localhost').then(function(connection) {
@@ -71,7 +70,7 @@ function init() {
 
   } else {
 
-    var HTTPMessage = require('./lib/httpMessage');
+    var HTTPMessage = require('./lib/messages/httpMessage');
     router.use('/simulate', simulate(new HTTPMessage()));
     return Promise.resolve();
 
