@@ -9,3 +9,4 @@ dotenv
 async
 apidoc
 sequelize
+amqplib
