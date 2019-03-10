@@ -1,9 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const crypto = require('crypto');
+
 const config = require('../lib/config');
 const NokiaUtil = require('../lib/nokiaUtil');
 const Util = require('../lib/util');
-const crypto = require('crypto');
+
 const NOKIA_CALLBACK = config.CALLBACK_BASE + "/nokia/connect/callback";
 
 /**
@@ -16,32 +18,32 @@ const NOKIA_CALLBACK = config.CALLBACK_BASE + "/nokia/connect/callback";
  */
 router.get('/:patientID', function (req, res) {
 
-    req.session.patientID = req.params.patientID;
-  	req.session.oauth_request_token = null;
-  	req.session.oauth_request_token_secret = null;
-  	req.session.save();
+  req.session.patientID = req.params.patientID;
+	req.session.oauth_request_token = null;
+	req.session.oauth_request_token_secret = null;
+	req.session.save();
 
-  	if (config.OAUTH_VERSION == 2) {
+	if (config.OAUTH_VERSION == 2) {
 
-  	    crypto.randomBytes(16, function(err, buffer) {
+    crypto.randomBytes(16, function(err, buffer) {
 
-  	        var state = buffer.toString('hex');
+      var state = buffer.toString('hex');
 
-  	        var url = config.NOKIA_AUTHORISATION_BASE_V2 + "?response_type=code&redirect_uri=" + NOKIA_CALLBACK + "&client_id=" + config.NOKIA_CLIENT_ID + "&scope=user.info,user.metrics,user.activity&state=" + state;
+      var url = config.NOKIA_AUTHORISATION_BASE_V2 + "?response_type=code&redirect_uri=" + NOKIA_CALLBACK + "&client_id=" + config.NOKIA_CLIENT_ID + "&scope=user.info,user.metrics,user.activity&state=" + state;
 
-  	        res.redirect(url);
+      res.redirect(url);
 
-  	    });
+    });
 
-  	} else {
+	} else {
 
-  	    NokiaUtil.genURLFromRequestToken(req, res, config.NOKIA_AUTHORISATION_BASE, function(url) {
+    NokiaUtil.genURLFromRequestToken(req, res, config.NOKIA_AUTHORISATION_BASE, function(url) {
 
-  	        res.redirect(url);
+      res.redirect(url);
 
-  	    });
+    });
 
-  	}
+	}
 
 });
 

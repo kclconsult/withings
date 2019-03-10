@@ -23,15 +23,10 @@ function getData(req, res, user, address, action, extra_params, jsonID) {
 			    if ( util.unixTimestamp(parsedBody[element]["date"]) ) {
 
             var date = new Date(parseInt(parsedBody[element]["date"]) * 1000);
-
             var hours = date.getHours();
-
             var minutes = "0" + date.getMinutes();
-
             var seconds = "0" + date.getSeconds();
-
             var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-
             parsedBody[element]["date"] = formattedTime + " " + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
 
           }
@@ -60,7 +55,7 @@ function queryAction(req, res, action) {
 
       patientID: req.params.patientID
 
-    },
+    }
 
   }).then(function(user) {
 

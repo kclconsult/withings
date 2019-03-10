@@ -29,6 +29,14 @@ git clone git@github.kcl.ac.uk:consult/device-integration.git
 ```
 git clone https://github.kcl.ac.uk/consult/device-integration.git
 ```
+
+Configure submodules:
+
+```
+git submodule init
+git submodule update
+```
+
 ## Documentation
 
 [View](https://github.kcl.ac.uk/pages/consult/device-integration_nokia/).
@@ -45,29 +53,15 @@ git commit -m "[details of changes]"
 git push
 ```
 
-## Running
-
-Ensure you are in the root folder. Create a node virtual environment (within a python virtual environment), and activate it:
-
-```
-virtualenv env
-. env/bin/activate
-pip install nodeenv
-nodeenv nenv
-. nenv/bin/activate
-```
-
-Install dependencies:
-
-```
-cat requirements.txt | xargs npm install -g
-```
+## Configuration
 
 Modify `lib/config.js` to include the address of the [sensor-fhir-mapper service](https://github.kcl.ac.uk/consult/sensor-fhir-mapper), callback base and other API endpoints, e.g.:
 
 ```
 SENSOR_TO_FHIR_URL: '[sensor-fhir-mapper service]'
 ```
+
+If using a queue, also specify this in the config file, and supply the queue name.
 
 Create an environment file:
 
@@ -87,6 +81,24 @@ NOKIA_CONSUMER_SECRET="[consumer]"
 ```
 
 Where [username] and [password] are credentials to secure this service, and [key], [secret], [client] and [consumer] are your Nokia details.
+
+## Running
+
+Ensure you are in the root folder. Create a node virtual environment (within a python virtual environment), and activate it:
+
+```
+virtualenv env
+. env/bin/activate
+pip install nodeenv
+nodeenv nenv
+. nenv/bin/activate
+```
+
+Install dependencies:
+
+```
+cat requirements.txt | xargs npm install -g
+```
 
 Run server:
 
@@ -134,7 +146,7 @@ location /nokia {
 
 ## Built With
 
-* [Express](https://expressjs.com/) - The web framework used.
+* [Express](https://expressjs.com/) - Web framework.
 
 ## Contributing
 

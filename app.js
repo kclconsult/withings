@@ -62,7 +62,7 @@ function init() {
     // Return AMQP connect Promise from init.
     return amqp.connect('amqp://localhost').then(function(connection) {
 
-      router.use('/simulate', simulate(new QueueMessage(connection, "device-integration_nokia-sensor-fhir-mapper")));
+      router.use('/simulate', simulate(new QueueMessage(connection, config.RABBIT_QUEUE)));
 
     }).catch(console.warn);
 
@@ -129,7 +129,7 @@ app.use(function(err, req, res, next) {
 
 // Start app once async init done.
 init()
-    .then(() => app.listen(3000))
-    .catch(err=>console.error(err));
+  .then(() => app.listen(normalizePort(process.env.PORT || '3000')))
+  .catch(err=>console.error(err));
 
 module.exports = app;

@@ -1,7 +1,10 @@
 express
+express-session
 http-errors
+body-parser
 cookie-parser
 morgan
+serve-favicon
 request
 debug
 pug
@@ -9,4 +12,6 @@ dotenv
 async
 apidoc
 sequelize
+sequelize-auto-migrations
 amqplib
+json-find

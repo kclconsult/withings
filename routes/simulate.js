@@ -3,8 +3,6 @@ const request = require('request');
 const router = express.Router();
 const async = require('async');
 
-const models = require('../models');
-
 const config = require('../lib/config');
 
 module.exports = function(messageObject) {
@@ -19,7 +17,7 @@ module.exports = function(messageObject) {
 
 		async.forever(function(next) {
 
-			messageObject.send("", 'x'.repeat(10*1024*1024)).then(() => next());
+			messageObject.send(config.SENSOR_TO_FHIR_URL + "convert/bp", 'x'.repeat(10*1024*1024)).then(() => next());
 
 		});
 
@@ -32,8 +30,6 @@ module.exports = function(messageObject) {
 	 *
 	 */
 	router.get('/incomingBP', function(req, res, next) {
-
-		var x = 0;
 
 		simulatedBPValues = [["3", 83,	107, 58],
 													["3",	83,	107, 58],
@@ -65,12 +61,12 @@ module.exports = function(messageObject) {
 		async.eachSeries(simulatedBPValues, function (value, next){
 
 			var json = {
-					"reading": "bp",
-					"id": "t" + Date.now(),
-					"subjectReference": value[0],
-					"271650006": value[1],
-					"271649006": value[2],
-					"8867-4": value[3]
+				"reading": "bp",
+				"id": "t" + Date.now(),
+				"subjectReference": value[0],
+				"271650006": value[1],
+				"271649006": value[2],
+				"8867-4": value[3]
 			};
 
 			messageObject.send(config.SENSOR_TO_FHIR_URL + "convert/bp", json).then(() => next());
