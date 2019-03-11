@@ -2,8 +2,7 @@ const express = require('express');
 const request = require('request');
 const router = express.Router();
 const async = require('async');
-
-const config = require('../lib/config');
+const config = require('config');
 
 module.exports = function(messageObject) {
 
@@ -17,7 +16,7 @@ module.exports = function(messageObject) {
 
 		async.forever(function(next) {
 
-			messageObject.send(config.SENSOR_TO_FHIR_URL + "convert/bp", 'x'.repeat(10*1024*1024)).then(() => next());
+			messageObject.send(config.get('sensor_to_fhir.URL') + "convert/bp", 'x'.repeat(10*1024*1024)).then(() => next());
 
 		});
 
@@ -69,7 +68,7 @@ module.exports = function(messageObject) {
 				"8867-4": value[3]
 			};
 
-			messageObject.send(config.SENSOR_TO_FHIR_URL + "convert/bp", json).then(() => next());
+			messageObject.send(config.get('sensor_to_fhir.URL') + "convert/bp", json).then(() => next());
 
 		}, function(err) {
 

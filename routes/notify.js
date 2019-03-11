@@ -1,9 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var models = require('../models');
-const config = require('../lib/config');
-const nokiaUtil = require('../lib/nokiaUtil');
+const express = require('express');
+const router = express.Router();
 const request = require('request');
+const config = require('config');
+
+const models = require('../models');
+
+const nokiaUtil = require('../lib/nokiaUtil');
 
 function listNotificationURLs(body) {
 
@@ -50,20 +52,20 @@ router.post('/', function(req, res, next) {
   }).then(function(user) {
 
 		params = {};
-    params[config.START["getmeas"]] = req.body.startdate;
-    params[config.END["getmeas"]] = req.body.enddate;
+    params[config.get('nokia_api_date.START')["getmeas"]] = req.body.startdate;
+    params[config.get('nokia_api_date.END')["getmeas"]] = req.body.enddate;
 
-		nokiaUtil.getData(req, res, user, config.URLS["getmeas"], "getmeas", params, function(data) {
+		nokiaUtil.getData(req, res, user, config.get('nokia_api_date.URLS')["getmeas"], "getmeas", params, function(data) {
 
 			if ( data.length > 0 ) {
 
 				const parsedBody = JSON.parse(nokiaUtil.translateNokiaData(data))["body"];
-				const allMeasures = parsedBody[config.TYPES["getmeas"]][0];
+				const allMeasures = parsedBody[config.get('nokia_api_date.TYPES')["getmeas"]][0];
 
 				// If this is a BP reading.
 				if ( parsedBody && allMeasures && allMeasures.measures[0].type.indexOf("Diastolic") >= 0 ) {
 
-					request.post(config.SENSOR_TO_FHIR_URL + "convert/bp", {
+					request.post(config.get('sensor_to_fhir.URL') + "convert/bp", {
 
 						json: {
 
@@ -125,7 +127,7 @@ router.get('/:id', function(req, res, next) {
 		params["action"] = "list";
 		params["user_id"] = user.nokiaID;
 
-		nokiaUtil.genURLFromRequestToken(req, res, config.SUBSCRIPTION_BASE, function(url) {
+		nokiaUtil.genURLFromRequestToken(req, res, config.get('nokia_api.SUBSCRIPTION_BASE'), function(url) {
 
 			request(url, function (error, response, body) {
 
@@ -160,7 +162,7 @@ router.get('/:id/revoke', function(req, res, next) {
 		params["action"] = "list";
 		params["user_id"] = user.nokiaID;
 
-		nokiaUtil.genURLFromRequestToken(config.SUBSCRIPTION_BASE, function(url) {
+		nokiaUtil.genURLFromRequestToken(config.get('nokia_api.SUBSCRIPTION_BASE'), function(url) {
 
 			request(url, function (error, response, body) {
 
@@ -173,7 +175,7 @@ router.get('/:id/revoke', function(req, res, next) {
 					params["callbackurl"] = require("querystring").escape(notificationURLs[notificationURL]);
 					params["appli"] = 4;
 
-					nokiaUtil.genURLFromRequestToken(config.SUBSCRIPTION_BASE, function(url) {
+					nokiaUtil.genURLFromRequestToken(config.get('nokia_api.SUBSCRIPTION_BASE'), function(url) {
 
 						request(url, function (error, response, body) {
 

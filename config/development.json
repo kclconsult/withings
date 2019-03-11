@@ -1,0 +1,12 @@
+{
+  
+  "dbConfig": {
+	  "dialect": "sqlite",
+	  "storage": "db.test.sqlite"
+  },
+
+  "message_queue": {
+    "HOST": "localhost"
+  }
+
+}

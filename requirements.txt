@@ -10,8 +10,9 @@ debug
 pug
 dotenv
 async
-apidoc
 sequelize
-sequelize-auto-migrations
 amqplib
 json-find
+sqlite3
+mysql2
+config

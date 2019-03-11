@@ -1,10 +1,11 @@
-var express = require('express');
-var request = require('request');
-var router = express.Router();
-const config = require('../lib/config');
+const express = require('express');
+const request = require('request');
+const router = express.Router();
+const config = require('config');
+
 const util = require('../lib/util');
 const nokiaUtil= require('../lib/nokiaUtil');
-var models = require('../models');
+const models = require('../models');
 
 function getData(req, res, user, address, action, extra_params, jsonID) {
 
@@ -60,7 +61,7 @@ function queryAction(req, res, action) {
   }).then(function(user) {
 
 		params = {};
-		getData(req, res, user, config.URLS[action], action, params, config.TYPES[action]);
+		getData(req, res, user, config.get('nokia_api_data.URLS')[action], action, params, config.get('nokia_api_data.TYPES')[action]);
 
   });
 
@@ -121,7 +122,7 @@ router.get('/:patientID/:action/:date', function(req, res, next) {
 
     params = {};
     params["date"] = req.params.date;
-		getData(req, res, user, config.URLS[req.params.action], req.params.action, params, config.TYPES[req.params.action]);
+		getData(req, res, user, config.get('nokia_api_data.URLS')[req.params.action], req.params.action, params, config.get('nokia_api_data.TYPES')[req.params.action]);
 
   });
 
@@ -155,7 +156,7 @@ router.get('/:patientID/:action/:start/:end', function(req, res, next) {
   }).then(function(user) {
 
 		// To accomodate different date formats for different endpoints.
-    if ( !config.START[req.params.action].includes("ymd") && (!util.unixTimestamp(req.params.start) || !util.unixTimestamp(req.params.end) ) ) {
+    if ( !config.get('nokia_api_data.START')[req.params.action].includes("ymd") && (!util.unixTimestamp(req.params.start) || !util.unixTimestamp(req.params.end) ) ) {
 
       req.params.start = new Date(req.params.start).getTime() / 1000;
       req.params.end = new Date(req.params.end).getTime() / 1000;
@@ -163,9 +164,9 @@ router.get('/:patientID/:action/:start/:end', function(req, res, next) {
     }
 
     params = {};
-    params[config.START[req.params.action]] = req.params.start;
-    params[config.END[req.params.action]] = req.params.end;
-		getData(req, res, user, config.URLS[req.params.action], req.params.action, params, config.TYPES[req.params.action]);
+    params[config.get('nokia_api_data.START')[req.params.action]] = req.params.start;
+    params[config.get('nokia_api_data.END')[req.params.action]] = req.params.end;
+		getData(req, res, user, config.get('nokia_api_data.URLS')[req.params.action], req.params.action, params, config.get('nokia_api_data.TYPES')[req.params.action]);
 
   });
 

@@ -4,18 +4,18 @@ const request = require('request');
 const querystring = require('querystring');
 const models = require('../models');
 
-const config = require('../lib/config');
+const config = require('config');
 const util = require('../lib/util');
 const nokiaUtil = require('../lib/nokiaUtil');
 
-const NOKIA_CALLBACK = config.CALLBACK_BASE + "/nokia/connect/callback";
+const NOKIA_CALLBACK = config.get('nokia_api.CALLBACK_BASE') + "/nokia/connect/callback";
 
 function subscribeNotifications(req, res) {
 
   params = {};
   params["action"] = "subscribe";
   params["user_id"] = req.query.userid;
-  params["callbackurl"] = querystring.escape(config.CALLBACK_BASE + "/nokia/notify");
+  params["callbackurl"] = querystring.escape(config.get('nokia_api.CALLBACK_BASE') + "/nokia/notify");
   params["comment"] = "comment";
   params["appli"] = 4;
 
@@ -48,18 +48,18 @@ function storeAccessToken(req, res) {
 
   }).then(function() {
 
-    if ( config.CONVERT_OAUTH ) {
+    if ( config.get('nokia_api.CONVERT_OAUTH') ) {
 
       var form = {
         "grant_type": "refresh_token",
-        "client_id": config.NOKIA_CLIENT_ID,
-        "client_secret": config.NOKIA_CONSUMER_SECRET,
+        "client_id": config.get('nokia_api_auth.NOKIA_CLIENT_ID'),
+        "client_secret": config.get('nokia_api_auth.NOKIA_CONSUMER_SECRET'),
         "refresh_token": req.session.oauth_request_token  + ":" + req.session.oauth_request_token_secret
       };
 
       var formData = querystring.stringify(form);
 
-      util.postRequest(config.NOKIA_ACCESS_TOKEN_BASE_OAUTH2, formData, function() {
+      util.postRequest(config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'), formData, function() {
 
         console.log(error + " " + JSON.stringify(response) + " " + body);
 
@@ -67,7 +67,7 @@ function storeAccessToken(req, res) {
 
       request({
 
-        url: config.NOKIA_ACCESS_TOKEN_BASE_OAUTH2,
+        url: config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'),
         headers: {
           'Content-Length': body.length,
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -97,15 +97,15 @@ router.get('/callback', function (req, res) {
 
     var body = {
       "grant_type": "authorization_code",
-      "client_id": config.NOKIA_CLIENT_ID,
-      "client_secret": config.NOKIA_CONSUMER_SECRET,
+      "client_id": config.get('nokia_api_auth.NOKIA_CLIENT_ID'),
+      "client_secret": config.get('nokia_api_auth.NOKIA_CONSUMER_SECRET'),
       "code": req.query.code,
       "redirect_uri": NOKIA_CALLBACK
     };
 
     var bodyData = querystring.stringify(body);
 
-    util.postRequest(config.NOKIA_ACCESS_TOKEN_BASE_OAUTH2, bodyData, function(URL, body, callback) {
+    util.postRequest(config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'), bodyData, function(URL, body, callback) {
 
       req.session.oauth_request_token = JSON.parse(body.body)["access_token"];
       req.session.oauth_request_token_secret = "";
@@ -121,7 +121,7 @@ router.get('/callback', function (req, res) {
 
   } else {
 
-    nokiaUtil.genURLFromRequestToken(req, res, config.NOKIA_ACCESS_TOKEN_BASE, function(url) {
+    nokiaUtil.genURLFromRequestToken(req, res, config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE'), function(url) {
 
       // Request access token using generated URL.
       request(url, function (error, response, body) {

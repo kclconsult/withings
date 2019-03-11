@@ -1,0 +1,15 @@
+{
+
+  "dbConfig": {
+    "username": "user",
+    "password": "password",
+    "database": "database",
+    "host": "mysql",
+    "dialect": "mysql"
+  },
+
+  "message_queue": {
+    "HOST": "rabbit"
+  }
+
+}

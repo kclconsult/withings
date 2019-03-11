@@ -15,7 +15,7 @@ var Sequelize = require('sequelize');
 var info = {
     "revision": 1,
     "name": "initial",
-    "created": "2018-02-09T14:31:48.086Z",
+    "created": "2019-03-11T18:03:36.259Z",
     "comment": ""
 };
 
@@ -26,21 +26,26 @@ var migrationCommands = [{
             {
                 "grpid": {
                     "type": Sequelize.STRING,
+                    "field": "grpid",
                     "primaryKey": true,
                     "allowNull": false
                 },
                 "category": {
-                    "type": Sequelize.STRING
+                    "type": Sequelize.STRING,
+                    "field": "category"
                 },
                 "date": {
-                    "type": Sequelize.STRING
+                    "type": Sequelize.STRING,
+                    "field": "date"
                 },
                 "createdAt": {
                     "type": Sequelize.DATE,
+                    "field": "createdAt",
                     "allowNull": false
                 },
                 "updatedAt": {
                     "type": Sequelize.DATE,
+                    "field": "updatedAt",
                     "allowNull": false
                 }
             },
@@ -54,19 +59,23 @@ var migrationCommands = [{
             {
                 "id": {
                     "type": Sequelize.INTEGER,
+                    "field": "id",
                     "autoIncrement": true,
                     "primaryKey": true,
                     "allowNull": false
                 },
                 "data": {
-                    "type": Sequelize.STRING
+                    "type": Sequelize.STRING,
+                    "field": "data"
                 },
                 "createdAt": {
                     "type": Sequelize.DATE,
+                    "field": "createdAt",
                     "allowNull": false
                 },
                 "updatedAt": {
                     "type": Sequelize.DATE,
+                    "field": "updatedAt",
                     "allowNull": false
                 }
             },
@@ -78,22 +87,36 @@ var migrationCommands = [{
         params: [
             "users",
             {
-                "id": {
+                "patientID": {
                     "type": Sequelize.INTEGER,
+                    "field": "patientID",
                     "primaryKey": true
                 },
+                "nokiaID": {
+                    "type": Sequelize.INTEGER,
+                    "field": "nokiaID",
+                    "primaryKey": false
+                },
                 "token": {
-                    "type": Sequelize.STRING
+                    "type": Sequelize.STRING,
+                    "field": "token"
                 },
                 "secret": {
-                    "type": Sequelize.STRING
+                    "type": Sequelize.STRING,
+                    "field": "secret"
+                },
+                "refresh": {
+                    "type": Sequelize.STRING,
+                    "field": "refresh"
                 },
                 "createdAt": {
                     "type": Sequelize.DATE,
+                    "field": "createdAt",
                     "allowNull": false
                 },
                 "updatedAt": {
                     "type": Sequelize.DATE,
+                    "field": "updatedAt",
                     "allowNull": false
                 }
             },
@@ -107,29 +130,36 @@ var migrationCommands = [{
             {
                 "id": {
                     "type": Sequelize.INTEGER,
+                    "field": "id",
                     "autoIncrement": true,
                     "primaryKey": true,
                     "allowNull": false
                 },
                 "value": {
-                    "type": Sequelize.STRING
+                    "type": Sequelize.STRING,
+                    "field": "value"
                 },
                 "type": {
-                    "type": Sequelize.STRING
+                    "type": Sequelize.STRING,
+                    "field": "type"
                 },
                 "multiplier": {
-                    "type": Sequelize.STRING
+                    "type": Sequelize.STRING,
+                    "field": "multiplier"
                 },
                 "createdAt": {
                     "type": Sequelize.DATE,
+                    "field": "createdAt",
                     "allowNull": false
                 },
                 "updatedAt": {
                     "type": Sequelize.DATE,
+                    "field": "updatedAt",
                     "allowNull": false
                 },
                 "groupGrpid": {
                     "type": Sequelize.STRING,
+                    "field": "groupGrpid",
                     "onUpdate": "CASCADE",
                     "onDelete": "CASCADE",
                     "references": {

@@ -1,29 +1,28 @@
 // Imports
-var express = require('express');
-var session = require('express-session')
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var request = require('request');
-var auth = require('basic-auth');
+const express = require('express');
+const session = require('express-session')
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const request = require('request');
+const auth = require('basic-auth');
 
 // Environment variables
 require('dotenv').config()
 
-// Models
-var models = require('./models');
+// Config
+const config = require('config');
 
-// Libs
-const config = require('./lib/config');
+// Models
+const models = require('./models');
 
 // Express app
-var app = express();
-var router = express.Router();
+const app = express();
+const router = express.Router();
 
 // Session
-var session = require('express-session');
 app.use(session({
   resave: true,
   saveUninitialized: true,
@@ -45,24 +44,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 ///////////////////////////
 
 // Routes
-var register = require('./routes/register');
-var connect = require('./routes/connect');
-var dashboard = require('./routes/dashboard');
-var notify = require('./routes/notify');
-var simulate = require('./routes/simulate');
+const register = require('./routes/register');
+const connect = require('./routes/connect');
+const dashboard = require('./routes/dashboard');
+const notify = require('./routes/notify');
+const simulate = require('./routes/simulate');
 
 // Route setup involving async
 function init() {
 
-  if ( config.MESSAGE_QUEUE == true ) {
+  if ( config.get('message_queue.ACTIVE') == true ) {
 
     var amqp = require('amqplib');
     var QueueMessage = require('./lib/messages/queueMessage');
 
     // Return AMQP connect Promise from init.
-    return amqp.connect('amqp://localhost').then(function(connection) {
+    return amqp.connect('amqp://' + config.get('message_queue.HOST')).then(function(connection) {
 
-      router.use('/simulate', simulate(new QueueMessage(connection, config.RABBIT_QUEUE)));
+      router.use('/simulate', simulate(new QueueMessage(connection, config.get('message_queue.NAME'))));
 
     }).catch(console.warn);
 
@@ -79,7 +78,6 @@ function init() {
 }
 
 // Non-async route setup
-
 router.use('/connect', connect)
 router.use('/notify', notify)
 
@@ -87,7 +85,7 @@ router.use('/', function(req, res, next) {
 
   var credentials = auth(req)
 
-  if ( !credentials || credentials.name !== config.USERNAME || credentials.pass !== config.PASSWORD ) {
+  if ( !credentials || credentials.name !== config.get('credentials.USERNAME') || credentials.pass !== config.get('credentials.PASSWORD') ) {
 
     res.status(401);
     res.header('WWW-Authenticate', 'Basic realm="forbidden"');
@@ -103,8 +101,6 @@ router.use('/', function(req, res, next) {
 
 router.use('/register', register)
 router.use('/dashboard', dashboard)
-
-
 app.use('/nokia', router)
 
 ///////////////////////////
@@ -128,8 +124,6 @@ app.use(function(err, req, res, next) {
 });
 
 // Start app once async init done.
-init()
-  .then(() => app.listen(normalizePort(process.env.PORT || '3000')))
-  .catch(err=>console.error(err));
+init().then(() => app.listen(process.env.PORT || '3000')).catch(err => console.error(err));
 
 module.exports = app;
