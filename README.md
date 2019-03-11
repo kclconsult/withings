@@ -55,7 +55,7 @@ git push
 
 ## Configuration
 
-Modify `lib/config.js` to include the address of the [sensor-fhir-mapper service](https://github.kcl.ac.uk/consult/sensor-fhir-mapper), callback base and other API endpoints, e.g.:
+Modify `config/default.js` to include the address of the [sensor-fhir-mapper service](https://github.kcl.ac.uk/consult/sensor-fhir-mapper), callback base and other API endpoints, e.g.:
 
 ```
 SENSOR_TO_FHIR_URL: '[sensor-fhir-mapper service]'
@@ -118,30 +118,24 @@ npm test
 
 ## Deployment
 
-Running the software on a server is the same as running it locally: clone and run the project on a remote machine. One can make local changes, push them and then pull them on the remote server.
+Deployment is via [Docker](https://docs.docker.com/compose/install/), and includes containers for this application, a production SQL database and an optional reverse proxy. If using the reverse proxy, fill in the appropriate [configuration](proxy/nginx.conf).
 
-Run in production using NODE_ENV environment variable, e.g.:
-
-```
-NODE_ENV=production npm start
-```
-
-Deployed systems should switch to a production database format (e.g. Postgres).
-
-Sample web server (reverse proxy) configuration, e.g.:
+Build these containers:
 
 ```
-location /nokia {
+docker-compose build
+```
 
-      proxy_set_header        Host $host;
-      proxy_set_header        X-Real-IP $remote_addr;
-      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header        X-Forwarded-Proto $scheme;
+Run these containers:
 
-      proxy_pass          http://localhost:3000/nokia;
-      proxy_read_timeout  90;
+```
+docker-compose up
+```
 
-    }
+(Optional) Run without proxy:
+
+```
+docker-compose up --scale proxy=0
 ```
 
 ## Built With
