@@ -4,12 +4,12 @@
     "username": "user",
     "password": "password",
     "database": "database",
-    "host": "mysql",
+    "host": "device-integration_nokia_mysql_1",
     "dialect": "mysql"
   },
 
   "message_queue": {
-    "HOST": "rabbit"
+    "HOST": "sensor-fhir-mapper_rabbit_1"
   }
 
 }

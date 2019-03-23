@@ -2,6 +2,7 @@ const express = require('express');
 const request = require('request');
 const router = express.Router();
 const async = require('async');
+const uuidv1 = require('uuid/v1');
 const config = require('config');
 
 module.exports = function(messageObject) {
@@ -28,44 +29,44 @@ module.exports = function(messageObject) {
 	 * @apiGroup Simulate
 	 *
 	 */
-	router.get('/incomingBP', function(req, res, next) {
+	router.get('/incomingBP/:patientID', function(req, res, next) {
 
-		simulatedBPValues = [["3", 83,	107, 58],
-													["3",	83,	107, 58],
-													["3",	85,	96,	 66],
-													["3",	75,	143, 65],
-													["3",	75,	101, 63],
-													["3",	76,	138, 78],
-													["3",	70,	121, 75],
-													["3",	81,	117, 68],
-													["3",	76,	133, 51],
-													["3",	70,	100, 77],
-													["3",	79,	97,	74],
-													["3",	88,	107, 73],
-													["3",	86,	139, 63],
-													["3",	83,	124, 66],
-													["3",	74,	139, 69],
-													["3",	87,	113, 68],
-													["3",	78,	140, 69],
-													["3",	79,	124, 78],
-													["3",	82,	95,	53],
-													["3",	86,	129, 79],
-													["3",	82,	143, 62],
-													["3",	82,	136, 79],
-													["3",	80,	133, 55],
-													["3",	77,	130, 76],
-													["3",	86,	122, 65],
-													["3",	86,	142, 53]];
+		simulatedBPValues = [[83,	107, 58],
+													[83,	107, 58],
+													[85,	96,	 66],
+													[75,	143, 65],
+													[75,	101, 63],
+													[76,	138, 78],
+													[70,	121, 75],
+													[81,	117, 68],
+													[76,	133, 51],
+													[70,	100, 77],
+													[79,	97,	74],
+													[88,	107, 73],
+													[86,	139, 63],
+													[83,	124, 66],
+													[74,	139, 69],
+													[87,	113, 68],
+													[78,	140, 69],
+													[79,	124, 78],
+													[82,	95,	53],
+													[86,	129, 79],
+													[82,	143, 62],
+													[82,	136, 79],
+													[80,	133, 55],
+													[77,	130, 76],
+													[86,	122, 65],
+													[86,	142, 53]];
 
 		async.eachSeries(simulatedBPValues, function (value, next){
 
 			var json = {
-				"reading": "bp",
-				"id": "t" + Date.now(),
-				"subjectReference": value[0],
-				"271650006": value[1],
-				"271649006": value[2],
-				"8867-4": value[3]
+				"reading": "BP",
+				"id": uuidv1(),
+				"subjectReference": req.params.patientID,
+				"271650006": value[0],
+				"271649006": value[1],
+				"8867-4": value[2]
 			};
 
 			messageObject.send(config.get('sensor_to_fhir.URL') + "convert/bp", json).then(() => next());

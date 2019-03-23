@@ -3,8 +3,8 @@ const router = express.Router();
 const crypto = require('crypto');
 const config = require('config');
 
-const NokiaUtil = require('../lib/nokiaUtil');
-const Util = require('../lib/util');
+const nokiaUtil = require('../lib/nokiaUtil');
+const util = require('../lib/util');
 
 const NOKIA_CALLBACK = config.get('nokia_api.CALLBACK_BASE') + "/nokia/connect/callback";
 
@@ -37,7 +37,7 @@ router.get('/:patientID', function (req, res) {
 
 	} else {
 
-    NokiaUtil.genURLFromRequestToken(req, res, config.get('nokia_api.NOKIA_AUTHORISATION_BASE'), function(url) {
+    nokiaUtil.genURLFromRequestToken(req, res, config.get('nokia_api.NOKIA_AUTHORISATION_BASE'), function(url) {
 
       res.redirect(url);
 
