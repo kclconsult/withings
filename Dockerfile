@@ -17,7 +17,7 @@ RUN npm config set prefix "/home/$user/.npm-packages"
 RUN npm install sequelize-cli -g
 ENV PATH="/home/$user/.npm-packages/bin:${PATH}"
 
-RUN git clone https://github.com/vishnubob/wait-for-it.git
+COPY ./bin/wait-for-it.sh wait-for-it.sh
 
 ENV NODE_ENV production
 EXPOSE 3000

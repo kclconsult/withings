@@ -24,39 +24,41 @@ module.exports = function(messageObject) {
 	});
 
 	/**
-	 * @api {get} /simulate/incomingBP Simulate a set of incoming blood pressure values.
+	 * @api {get} /simulate/incomingBP/:patientID/:practitionerID Simulate a set of incoming blood pressure values.
 	 * @apiName simulateBP
 	 * @apiGroup Simulate
 	 *
+	 * @apiParam {String} patientID Patient unique ID.
+	 * @apiParam {String} practitionerID Practitioner unique ID.
 	 */
-	router.get('/incomingBP/:patientID', function(req, res, next) {
+	router.get('/incomingBP/:patientID/:practitionerID', function(req, res, next) {
 
 		simulatedBPValues = [[83,	107, 58],
-													[83,	107, 58],
-													[85,	96,	 66],
-													[75,	143, 65],
-													[75,	101, 63],
-													[76,	138, 78],
-													[70,	121, 75],
-													[81,	117, 68],
-													[76,	133, 51],
-													[70,	100, 77],
-													[79,	97,	74],
-													[88,	107, 73],
-													[86,	139, 63],
-													[83,	124, 66],
-													[74,	139, 69],
-													[87,	113, 68],
-													[78,	140, 69],
-													[79,	124, 78],
-													[82,	95,	53],
-													[86,	129, 79],
-													[82,	143, 62],
-													[82,	136, 79],
-													[80,	133, 55],
-													[77,	130, 76],
-													[86,	122, 65],
-													[86,	142, 53]];
+												[83,	107, 58],
+												[85,	96,	 66],
+												[75,	143, 65],
+												[75,	101, 63],
+												[76,	138, 78],
+												[70,	121, 75],
+												[81,	117, 68],
+												[76,	133, 51],
+												[70,	100, 77],
+												[79,	97,	74],
+												[88,	107, 73],
+												[86,	139, 63],
+												[83,	124, 66],
+												[74,	139, 69],
+												[87,	113, 68],
+												[78,	140, 69],
+												[79,	124, 78],
+												[82,	95,	53],
+												[86,	129, 79],
+												[82,	143, 62],
+												[82,	136, 79],
+												[80,	133, 55],
+												[77,	130, 76],
+												[86,	122, 65],
+												[86,	142, 53]];
 
 		async.eachSeries(simulatedBPValues, function (value, next){
 
@@ -64,6 +66,7 @@ module.exports = function(messageObject) {
 				"reading": "BP",
 				"id": uuidv1(),
 				"subjectReference": req.params.patientID,
+				"practitionerReference": req.params.practitionerID,
 				"271650006": value[0],
 				"271649006": value[1],
 				"8867-4": value[2]

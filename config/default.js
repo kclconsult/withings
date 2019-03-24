@@ -32,7 +32,7 @@ module.exports = {
   },
 
   sensor_to_fhir: {
-    URL: 'http://localhost:3001/'
+    URL: 'http://localhost/populate'
   },
 
   message_queue: {
