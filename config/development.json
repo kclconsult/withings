@@ -1,12 +1,16 @@
 {
-  
+
   "dbConfig": {
 	  "dialect": "sqlite",
 	  "storage": "db.test.sqlite"
   },
 
+  "sensor_to_fhir": {
+    "URL": "http://localhost:3002"
+  },
+
   "message_queue": {
-    "HOST": "localhost"
+    "ACTIVE": "false"
   }
 
 }

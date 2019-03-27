@@ -8,8 +8,14 @@
     "dialect": "mysql"
   },
 
+  "sensor_to_fhir": {
+    "URL": "http://sensor-fhir-mapper_webapp-queue_1:3002"
+  },
+
   "message_queue": {
-    "HOST": "sensor-fhir-mapper_rabbit_1"
+    "ACTIVE": true,
+    "HOST": "sensor-fhir-mapper_rabbit_1",
+    "NAME": "device-integration_nokia-sensor-fhir-mapper"
   }
 
 }

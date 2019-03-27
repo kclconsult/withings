@@ -17,7 +17,7 @@ module.exports = function(messageObject) {
 
 		async.forever(function(next) {
 
-			messageObject.send(config.get('sensor_to_fhir.URL') + "convert/bp", 'x'.repeat(10*1024*1024)).then(() => next());
+			messageObject.send(config.get('sensor_to_fhir.URL') + "/create/bp", 'x'.repeat(10*1024*1024)).then(() => next());
 
 		});
 
@@ -72,7 +72,7 @@ module.exports = function(messageObject) {
 				"8867-4": value[2]
 			};
 
-			messageObject.send(config.get('sensor_to_fhir.URL') + "convert/bp", json).then(() => next());
+			messageObject.send(config.get('sensor_to_fhir.URL') + "/create/bp", json).then(() => next());
 
 		}, function(err) {
 
