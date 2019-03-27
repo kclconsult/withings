@@ -9,4 +9,6 @@ COPY ./certs/stacy.key /etc/nginx/ssl/stacy.key
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY locations /etc/nginx/locations
 
+COPY bin/wait-for-it.sh wait-for-it.sh
+
 CMD ["nginx", "-g", "daemon off;"]

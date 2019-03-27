@@ -50,26 +50,31 @@ const dashboard = require('./routes/dashboard');
 const notify = require('./routes/notify');
 const simulate = require('./routes/simulate');
 
+const amqp = require('amqplib');
+const QueueMessage = require('./lib/messages/queueMessage');
+const HTTPMessage = require('./lib/messages/httpMessage');
+
 // Route setup involving async
 function init() {
 
   if ( config.get('message_queue.ACTIVE') == true ) {
 
-    var amqp = require('amqplib');
-    var QueueMessage = require('./lib/messages/queueMessage');
-
     // Return AMQP connect Promise from init.
     return amqp.connect('amqp://' + config.get('message_queue.HOST')).then(function(connection) {
 
+      console.log("Connected to " + config.get('message_queue.HOST'));
       router.use('/simulate', simulate(new QueueMessage(connection, config.get('message_queue.NAME'))));
 
-    }).catch(console.warn);
+    }).catch(function(error) {
 
-    // TODO: .finally(function() { conn.close(); });
+      console.log(error);
+      // Retry connection if server is not ready.
+      return setTimeout(init, 5000);
+
+    });
 
   } else {
 
-    var HTTPMessage = require('./lib/messages/httpMessage');
     router.use('/simulate', simulate(new HTTPMessage()));
     return Promise.resolve();
 

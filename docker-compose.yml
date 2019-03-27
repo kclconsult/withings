@@ -2,12 +2,27 @@ version: "3.7"
 
 services:
 
+  proxy:
+    build:
+      context: ./proxy
+    command: ["./wait-for-it.sh", "--timeout=0", "device-integration_nokia_webapp_1:3000", "--", "nginx", "-g", "daemon off;"]
+    tty: true
+    ports:
+      - '443:443'
+      - '80:80'
+    depends_on:
+      - webapp
+
   webapp:
     build:
       context: .
     depends_on:
       - mysql
-    links:
+
+  migration:
+    image: device-integration_nokia_webapp:latest
+    command: ["./wait-for-it.sh", "--timeout=0", "device-integration_nokia_mysql_1:3306", "--", "npm", "run", "migrate"]
+    depends_on:
       - mysql
 
   mysql:
@@ -19,26 +34,6 @@ services:
       MYSQL_PASSWORD: password
     volumes:
       - sensor_data_volume:/var/lib/mysql
-
-  migration:
-    image: device-integration_nokia_webapp:latest
-    command: ["./wait-for-it.sh", "--timeout=0", "device-integration_nokia_mysql_1:3306", "--", "npm", "run", "migrate"]
-    depends_on:
-      - mysql
-    links:
-      - mysql
-
-  proxy:
-    build:
-      context: ./proxy
-    tty: true
-    ports:
-      - '443:443'
-      - '80:80'
-    depends_on:
-      - webapp
-    links:
-      - webapp
 
 volumes:
   sensor_data_volume:
