@@ -17,3 +17,5 @@ sqlite3
 mysql2
 config
 uuid
+csv-parse
+fs

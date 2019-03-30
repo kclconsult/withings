@@ -4,6 +4,8 @@ const router = express.Router();
 const async = require('async');
 const uuidv1 = require('uuid/v1');
 const config = require('config');
+const parse = require('csv-parse');
+const fs = require('fs');
 
 module.exports = function(messageObject) {
 
@@ -33,52 +35,54 @@ module.exports = function(messageObject) {
 	 */
 	router.get('/incomingBP/:patientID/:practitionerID', function(req, res, next) {
 
-		simulatedBPValues = [[83,	107, 58],
-												[83,	107, 58],
-												[85,	96,	 66],
-												[75,	143, 65],
-												[75,	101, 63],
-												[76,	138, 78],
-												[70,	121, 75],
-												[81,	117, 68],
-												[76,	133, 51],
-												[70,	100, 77],
-												[79,	97,	74],
-												[88,	107, 73],
-												[86,	139, 63],
-												[83,	124, 66],
-												[74,	139, 69],
-												[87,	113, 68],
-												[78,	140, 69],
-												[79,	124, 78],
-												[82,	95,	53],
-												[86,	129, 79],
-												[82,	143, 62],
-												[82,	136, 79],
-												[80,	133, 55],
-												[77,	130, 76],
-												[86,	122, 65],
-												[86,	142, 53]];
+		const parser = parse({delimiter: ' '}, function (err, data) {
 
-		async.eachSeries(simulatedBPValues, function (value, next){
+			if ( data ) {
 
-			var json = {
-				"reading": "BP",
-				"id": uuidv1(),
-				"subjectReference": req.params.patientID,
-				"practitionerReference": req.params.practitionerID,
-				"271650006": value[0],
-				"271649006": value[1],
-				"8867-4": value[2]
-			};
+				dataArray = [];
 
-			messageObject.send(config.get('sensor_to_fhir.URL') + "/create/bp", json).then(() => next());
+		    data.forEach(function(row) {
 
-		}, function(err) {
+					dataArray.push(row);
 
-			res.sendStatus(200);
+				});
+
+				headers = dataArray.shift();
+
+				async.eachSeries(dataArray, function (row, next){
+
+					var jsonRow = {};
+
+					jsonRow.reading = "BP";
+					jsonRow.id = uuidv1();
+					jsonRow.subjectReference = req.params.patientID;
+					jsonRow.practitionerReference = req.params.practitionerID;
+
+					row.forEach(function(entry) {
+
+						jsonRow[headers[row.indexOf(entry)]] = entry;
+
+					});
+
+					console.log(jsonRow);
+
+					messageObject.send(config.get('sensor_to_fhir.URL') + "/create/bp", jsonRow).then(() => next());
+
+				}, function(err) {
+
+					res.sendStatus(200);
+
+				});
+
+			} else {
+
+				console.error("Data not supplied in suitable format");
+
+			}
 
 		});
+
+		fs.createReadStream("routes/data/bp.csv").pipe(parser);
 
 	});
 
