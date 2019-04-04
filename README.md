@@ -21,13 +21,13 @@ Sends messages to: sensor-fhir-mapper ([install](https://github.kcl.ac.uk/consul
 (Recommended) [Create an SSH key](https://help.github.com/en/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) and clone this repository.
 
 ```
-git clone git@github.kcl.ac.uk:consult/device-integration.git
+git clone git@github.kcl.ac.uk:consult/device-integration_nokia.git
 ```
 
 (Alternative) Clone this repository using HTTPs, suppling username and password:
 
 ```
-git clone https://github.kcl.ac.uk/consult/device-integration.git
+git clone https://github.kcl.ac.uk/consult/device-integration_nokia.git
 ```
 
 Configure submodules:
