@@ -64,8 +64,6 @@ module.exports = function(messageObject) {
 
 					});
 
-					console.log(jsonRow);
-
 					messageObject.send(config.get('sensor_to_fhir.URL') + "/create/bp", jsonRow).then(() => next());
 
 				}, function(err) {

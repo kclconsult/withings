@@ -14,8 +14,8 @@ var Sequelize = require('sequelize');
 
 var info = {
     "revision": 1,
-    "name": "initial",
-    "created": "2019-03-11T18:03:36.259Z",
+    "name": "init",
+    "created": "2019-04-04T22:30:29.354Z",
     "comment": ""
 };
 
@@ -65,7 +65,7 @@ var migrationCommands = [{
                     "allowNull": false
                 },
                 "data": {
-                    "type": Sequelize.STRING,
+                    "type": Sequelize.TEXT,
                     "field": "data"
                 },
                 "createdAt": {
@@ -88,7 +88,7 @@ var migrationCommands = [{
             "users",
             {
                 "patientID": {
-                    "type": Sequelize.INTEGER,
+                    "type": Sequelize.STRING,
                     "field": "patientID",
                     "primaryKey": true
                 },

@@ -3,7 +3,7 @@ module.exports = function(sequelize, DataTypes) {
   var users = sequelize.define('users', {
     patientID: {
       primaryKey: true,
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     },
     nokiaID: {
       primaryKey: false,

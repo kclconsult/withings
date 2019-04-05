@@ -88,7 +88,7 @@
                 },
                 "data": {
                     "field": "data",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.TEXT"
                 },
                 "createdAt": {
                     "allowNull": false,
@@ -109,7 +109,7 @@
                 "patientID": {
                     "primaryKey": true,
                     "field": "patientID",
-                    "seqType": "Sequelize.INTEGER"
+                    "seqType": "Sequelize.STRING"
                 },
                 "nokiaID": {
                     "primaryKey": false,

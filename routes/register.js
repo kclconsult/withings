@@ -18,6 +18,8 @@ const NOKIA_CALLBACK = config.get('nokia_api.CALLBACK_BASE') + "/nokia/connect/c
  */
 router.get('/:patientID', function (req, res) {
 
+  // TODO: Verify patient ID exists in system?
+
   req.session.patientID = req.params.patientID;
 	req.session.oauth_request_token = null;
 	req.session.oauth_request_token_secret = null;

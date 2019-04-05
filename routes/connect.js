@@ -3,6 +3,7 @@ const router = express.Router();
 const request = require('request');
 const querystring = require('querystring');
 const models = require('../models');
+const logger = require('../config/winston');
 
 const config = require('config');
 const util = require('../lib/util');
@@ -10,7 +11,7 @@ const nokiaUtil = require('../lib/nokiaUtil');
 
 const NOKIA_CALLBACK = config.get('nokia_api.CALLBACK_BASE') + "/nokia/connect/callback";
 
-function subscribeNotifications(req, res) {
+function subscribeNotifications(req, res, callback) {
 
   params = {};
   params["action"] = "subscribe";
@@ -19,11 +20,15 @@ function subscribeNotifications(req, res) {
   params["comment"] = "comment";
   params["appli"] = 4;
 
-  nokiaUtil.notificationSubscribe(req, res, params, function() {});
+  nokiaUtil.notificationSubscribe(req, res, params, function() {
+
+    callback(200);
+
+  });
 
 }
 
-function storeAccessToken(req, res) {
+function storeAccessToken(req, res, callback) {
 
   models.users.findOrCreate({
 
@@ -59,31 +64,21 @@ function storeAccessToken(req, res) {
 
       var formData = querystring.stringify(form);
 
-      util.postRequest(config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'), formData, function() {
+      util.postRequest(config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'), formData, function(error, response, body) {
 
         console.log(error + " " + JSON.stringify(response) + " " + body);
 
-      });
+        util.postRequest(config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'), body, function(error, response, body) {
 
-      request({
+          subscribeNotifications(req, res, callback);
 
-        url: config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'),
-        headers: {
-          'Content-Length': body.length,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        method: "POST",
-        body: body,
-
-      }, function (error, response, body) {
-
-        subscribeNotifications(req, res);
+        });
 
       });
 
     } else {
 
-      subscribeNotifications(req, res);
+      subscribeNotifications(req, res, callback);
 
     }
 
@@ -93,7 +88,7 @@ function storeAccessToken(req, res) {
 
 router.get('/callback', function (req, res) {
 
-  if ( config.OAUTH_VERSION == 2 ) {
+  if ( config.get("nokia_api.OAUTH_VERSION") == 2 ) {
 
     var body = {
       "grant_type": "authorization_code",
@@ -105,17 +100,30 @@ router.get('/callback', function (req, res) {
 
     var bodyData = querystring.stringify(body);
 
-    util.postRequest(config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'), bodyData, function(URL, body, callback) {
+    util.postRequest(config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'), bodyData, function(error, response, body) {
 
-      req.session.oauth_request_token = JSON.parse(body.body)["access_token"];
-      req.session.oauth_request_token_secret = "";
-      req.session.oauth_refresh_token = JSON.parse(body.body)["refresh_token"];
-      req.session.save();
+      if ( !error && body && ( parsedBody = util.JSONParseWrapper(body) ) ) {
 
-      // ~MDC Hack for compatibility with OAuth 1.
-      req.query.userid = JSON.parse(body.body)["userid"];
+        req.session.oauth_request_token = parsedBody["access_token"];
+        req.session.oauth_request_token_secret = "";
+        req.session.oauth_refresh_token = parsedBody["refresh_token"];
+        req.session.save();
 
-      storeAccessToken(req, res);
+        // ~MDC Hack for compatibility with OAuth 1.
+        req.query.userid = parsedBody["userid"];
+
+        storeAccessToken(req, res, function(status) {
+
+          res.sendStatus(status);
+
+        });
+
+      } else {
+
+        logger.error("Unable to parse response to request for access token: " + error + " " + ( ( body && typeof body === "object" ) ? JSON.stringify(body) : "" ));
+        res.sendStatus(400);
+
+      }
 
     });
 
@@ -126,20 +134,31 @@ router.get('/callback', function (req, res) {
       // Request access token using generated URL.
       request(url, function (error, response, body) {
 
-        // Is overwritten with updated access token for final call (~MDC there's a neater way to do this).
-        req.session.oauth_request_token = Util.processKeyValue(body)['oauth_token'];
-        req.session.oauth_request_token_secret = Util.processKeyValue(body)['oauth_token_secret'];
-        req.session.save();
+        if ( !error && body && ( responseKeyValue = util.processKeyValue(body) ) ) {
 
-        storeAccessToken(req, res);
+          // Is overwritten with updated access token for final call (~MDC there's a neater way to do this).
+          req.session.oauth_request_token = util.processKeyValue(body)['oauth_token'];
+          req.session.oauth_request_token_secret = util.processKeyValue(body)['oauth_token_secret'];
+          req.session.save();
+
+          storeAccessToken(req, res, function(status) {
+
+            res.sendStatus(status);
+
+          });
+
+        } else {
+
+          logger.error("Unable to parse response to request for access token: " + error + " " + ( ( body && typeof body === "object" ) ? JSON.stringify(body) : "" ));
+          res.sendStatus(400);
+
+        }
 
       });
 
     });
 
   }
-
-  res.end();
 
 });
 

@@ -19,3 +19,4 @@ config
 uuid
 csv-parse
 fs
+winston
