@@ -25,6 +25,12 @@ module.exports = function(messageObject) {
 
 	});
 
+	router.get('/incomingBP', function(req, res, next) {
+
+		res.send("Please supply patient and practitioner ID.");
+
+	});
+
 	/**
 	 * @api {get} /simulate/incomingBP/:patientID/:practitionerID Simulate a set of incoming blood pressure values.
 	 * @apiName simulateBP

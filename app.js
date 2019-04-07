@@ -60,12 +60,12 @@ function init() {
 
   if ( config.get('message_queue.ACTIVE') == true ) {
 
-    // Return AMQP connect Promise from init.
     amqp.connect('amqp://' + config.get('message_queue.HOST')).then(function(connection) {
 
       logger.info("Connected to " + config.get('message_queue.HOST'));
       router.use('/simulate', simulate(new QueueMessage(connection, config.get('message_queue.NAME'))));
       router.use('/notify', notify(new QueueMessage(connection, config.get('message_queue.NAME'))))
+      // Start once connected.
       start();
 
     }).catch(function(error) {
