@@ -86,7 +86,7 @@ module.exports = function(messageObject) {
 
 		});
 
-		fs.createReadStream("routes/data/bp.csv").pipe(parser);
+		fs.createReadStream("routes/sample-data/bp.csv").pipe(parser);
 
 	});
 

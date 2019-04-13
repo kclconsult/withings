@@ -138,6 +138,8 @@ docker-compose up
 docker-compose up --scale proxy=0
 ```
 
+Different docker-compose files exist to accomodate different service configurations.
+
 ## Built With
 
 * [Express](https://expressjs.com/) - Web framework.
