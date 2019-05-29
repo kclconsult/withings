@@ -13,7 +13,7 @@ module.exports = {
   },
 
   nokia_api: {
-    CALLBACK_BASE: "https://consult.hscr.kcl.ac.uk",
+    CALLBACK_BASE: "https://device.consultproject.co.uk",
   	NOKIA_REQUEST_TOKEN_BASE: "https://developer.health.nokia.com/account/request_token",
   	NOKIA_AUTHORISATION_BASE: "https://developer.health.nokia.com/account/authorize",
   	NOKIA_AUTHORISATION_BASE_V2: "https://account.withings.com/oauth2_user/authorize2",

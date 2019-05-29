@@ -6,9 +6,9 @@ RUN mkdir /etc/nginx/ssl
 COPY ./certs/stacy.crt /etc/nginx/ssl/stacy.crt
 COPY ./certs/stacy.key /etc/nginx/ssl/stacy.key
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY locations /etc/nginx/locations
+COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./locations /etc/nginx/locations
 
-COPY bin/wait-for-it.sh wait-for-it.sh
+COPY ./bin/wait-for-it.sh wait-for-it.sh
 
 CMD ["nginx", "-g", "daemon off;"]

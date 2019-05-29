@@ -16,17 +16,17 @@ services:
     build:
       context: .
     depends_on:
-      - mysql
+      - mariadb
 
   migration:
     image: device-integration_nokia_webapp:latest
     command: ["./wait-for-it.sh", "--timeout=0", "device-integration_nokia_mysql_1:3306", "--", "npm", "run", "migrate"]
     depends_on:
       - webapp
-      - mysql
+      - mariadb
 
-  mysql:
-    image: mysql:5
+  mariadb:
+    build: db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: database

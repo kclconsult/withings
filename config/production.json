@@ -4,7 +4,7 @@
     "username": "user",
     "password": "password",
     "database": "database",
-    "host": "device-integration_nokia_mysql_1",
+    "host": "device-integration_nokia_mariadb_1",
     "dialect": "mysql"
   },
 

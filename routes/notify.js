@@ -216,7 +216,9 @@ module.exports = function(messageObject) {
 	  }).then(function(user) {
 
 			req.session.oauth_request_token = user.token;
-			req.session.	oauth_request_token_secret = user.secret;
+			req.session.oauth_request_token_secret = user.secret;
+			req.session.oauth_refresh_token = user.refresh;
+			req.session.save();
 
 			params = {};
 			params["action"] = "list";
