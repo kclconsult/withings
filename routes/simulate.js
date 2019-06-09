@@ -39,7 +39,7 @@ module.exports = function(messageObject) {
 	 * @apiParam {String} patientID Patient unique ID.
 	 * @apiParam {String} practitionerID Practitioner unique ID.
 	 */
-	router.get('/incomingBP/:patientID/:practitionerID', function(req, res, next) {
+	router.get('/:simulationType/:patientID/:practitionerID', function(req, res, next) {
 
 		const parser = parse({delimiter: ' '}, function (err, data) {
 
@@ -80,13 +80,23 @@ module.exports = function(messageObject) {
 
 			} else {
 
-				console.error("Data not supplied in suitable format");
+				console.error("Data not supplied in a suitable format");
 
 			}
 
 		});
 
-		fs.createReadStream("routes/sample-data/bp.csv").pipe(parser);
+		const SIMULATION_PATH = "routes/sample-data/" + req.params.simulationType + ".csv";
+
+		if ( fs.existsSync(SIMULATION_PATH) ) {
+
+			fs.createReadStream(SIMULATION_PATH).pipe(parser);
+
+		} else {
+
+			res.sendStatus(404);
+
+		}
 
 	});
 
