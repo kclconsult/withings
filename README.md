@@ -37,6 +37,8 @@ git submodule init
 git submodule update
 ```
 
+NB: If cloning over HTTPS, edit [.gitmodules](.gitmodules) to reflect the HTTPS URL before running update, and then sync with `git submodule sync` before updating.
+
 ## Documentation
 
 [View](https://github.kcl.ac.uk/pages/consult/device-integration_nokia/).
@@ -180,3 +182,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * Nokia's original health API [https://developer.health.nokia.com/api](https://developer.health.nokia.com/api).
+* MaraiDB encryption guide [https://mariadb.com/kb/en/library/file-key-management-encryption-plugin/](https://mariadb.com/kb/en/library/file-key-management-encryption-plugin/).

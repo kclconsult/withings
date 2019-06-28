@@ -92,7 +92,7 @@ define({ "api": [
             "type": "Number",
             "optional": false,
             "field": "date",
-            "description": "<p>A timestamp indicating the date on which the data should be gathered.</p>"
+            "description": "<p>A timestamp indicating the date on which the data should be gathered (Unix format e.g. 1551209506).</p>"
           }
         ]
       }
@@ -135,14 +135,14 @@ define({ "api": [
             "type": "Number",
             "optional": false,
             "field": "start",
-            "description": "<p>A timestamp indicating the start of the time period in which data should be gathered.</p>"
+            "description": "<p>A timestamp indicating the start of the time period in which data should be gathered (Unix format e.g. 1551209506).</p>"
           },
           {
             "group": "Parameter",
             "type": "Number",
             "optional": false,
             "field": "end",
-            "description": "<p>A timestamp indicating the end of the time period in which data should be gathered.</p>"
+            "description": "<p>A timestamp indicating the end of the time period in which data should be gathered (Unix format e.g. 1551209506).</p>"
           }
         ]
       }
@@ -183,9 +183,46 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/simulate/incomingBP",
-    "title": "Simulate a set of incoming blood pressure values.",
+    "url": "/simulate/:simulationType/:patientID/:practitionerID",
+    "title": "Simulate a set of incoming blood pressure values or a specific BP alert.",
     "name": "simulateBP",
+    "group": "Simulate",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "simulationType",
+            "description": "<p>[incomingBP|amberDia|amberSys|amberDiaSys|redDia|redSys|redDiaSys|doubleRedDia|doubleRedSys|doubleRedDiaSys]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "patientID",
+            "description": "<p>Patient unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "practitionerID",
+            "description": "<p>Practitioner unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./routes/simulate.js",
+    "groupTitle": "Simulate"
+  },
+  {
+    "type": "get",
+    "url": "/simulate/simulateMass",
+    "title": "Simulate mass of incoming data values (currently does not exit).",
+    "name": "simulateMass",
     "group": "Simulate",
     "version": "0.0.0",
     "filename": "./routes/simulate.js",

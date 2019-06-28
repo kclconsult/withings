@@ -32,10 +32,11 @@ module.exports = function(messageObject) {
 	});
 
 	/**
-	 * @api {get} /simulate/incomingBP/:patientID/:practitionerID Simulate a set of incoming blood pressure values.
+	 * @api {get} /simulate/:simulationType/:patientID/:practitionerID Simulate a set of incoming blood pressure values or a specific BP alert.
 	 * @apiName simulateBP
 	 * @apiGroup Simulate
 	 *
+	 * @apiParam {String} simulationType [incomingBP|amberDia|amberSys|amberDiaSys|redDia|redSys|redDiaSys|doubleRedDia|doubleRedSys|doubleRedDiaSys]
 	 * @apiParam {String} patientID Patient unique ID.
 	 * @apiParam {String} practitionerID Practitioner unique ID.
 	 */
