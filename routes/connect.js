@@ -49,7 +49,7 @@ function storeAccessToken(req, res, callback) {
 
   }).error(function(err) {
 
-    console.log(err);
+    logger.error(err);
 
   }).then(function() {
 
@@ -66,7 +66,7 @@ function storeAccessToken(req, res, callback) {
 
       util.postRequest(config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'), formData, function(error, response, body) {
 
-        console.log(error + " " + JSON.stringify(response) + " " + body);
+        logger.error(error + " " + JSON.stringify(response) + " " + body);
 
         util.postRequest(config.get('nokia_api.NOKIA_ACCESS_TOKEN_BASE_OAUTH2'), body, function(error, response, body) {
 

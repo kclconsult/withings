@@ -4,6 +4,8 @@ proxy/locations/*
 !proxy/locations/nokia
 proxy/certs/*
 !proxy/certs/gen-domain-cert.sh
+*.enc
+*.key
 
 # Created by https://www.gitignore.io/api/node,venv,linux,dropbox,virtualenv,archlinuxpackages
 # Edit at https://www.gitignore.io/?templates=node,venv,linux,dropbox,virtualenv,archlinuxpackages

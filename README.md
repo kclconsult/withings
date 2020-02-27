@@ -84,6 +84,9 @@ NOKIA_CONSUMER_SECRET="[consumer]"
 
 Where [username] and [password] are credentials to secure this service, and [key], [secret], [client] and [consumer] are your Nokia details.
 
+[Setup db encryption keys](https://mariadb.com/kb/en/file-key-management-encryption-plugin/) in `db`.
+
+Migrations can be reverse engineered from model updates using the [makemigration](https://www.npmjs.com/package/sequelize-auto-migrations) command.
 ## Running
 
 Ensure you are in the root folder. Create a node virtual environment (within a python virtual environment), and activate it:
