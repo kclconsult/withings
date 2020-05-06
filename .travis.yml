@@ -2,4 +2,4 @@ language: node_js
 node_js:
   - "14"
 env:
-  - NODE_ENV=test
+  - NODE_ENV=test USERNAME=test PASSWORD=test NOKIA_CONSUMER_KEY=test NOKIA_CLIENT_ID=test NOKIA_SECRET=test NOKIA_CONSUMER_SECRET=test
