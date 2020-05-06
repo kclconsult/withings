@@ -119,7 +119,7 @@ module.exports = function(messageObject) {
 
 									} else {
 
-										logger.error("Failed to get measures from the data received on this measure: ")
+										logger.error("Failed to get measures from the data received on this measure: ");
 										if (!allMeasuresOuter) logger.error(config.get('nokia_api_data.TYPES')["getmeas"] + " not in " + translatedNokiaData);
 										if (allMeasuresOuter && !allMeasuresOuter[0]) logger.error("Could not find 0th index in: " + allMeasuresOuter);
 
@@ -260,4 +260,4 @@ module.exports = function(messageObject) {
 
 	return router;
 
-}
+};

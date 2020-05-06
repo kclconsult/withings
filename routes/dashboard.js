@@ -11,9 +11,7 @@ function getData(req, res, user, address, action, extra_params, jsonID) {
 
 	nokiaUtil.getData(req, res, user, address, action, extra_params, function(data) {
 
-		console.log(data);
-
-		if ( data.length > 0 ) {
+		if ( data && data.length > 0 ) {
 
 			var parsedBody = JSON.parse(nokiaUtil.translateNokiaData(data))["body"][jsonID];
 
@@ -60,6 +58,7 @@ function queryAction(req, res, action) {
 
   }).then(function(user) {
 
+		if (!user) return res.send(404);
 		params = {};
 		getData(req, res, user, config.get('nokia_api_data.URLS')[action], action, params, config.get('nokia_api_data.TYPES')[action]);
 
@@ -120,6 +119,7 @@ router.get('/:patientID/:action/:date', function(req, res, next) {
 
   }).then(function(user) {
 
+		if (!user) return res.sendStatus(404);
     params = {};
     params["date"] = req.params.date;
 		getData(req, res, user, config.get('nokia_api_data.URLS')[req.params.action], req.params.action, params, config.get('nokia_api_data.TYPES')[req.params.action]);
@@ -155,6 +155,7 @@ router.get('/:patientID/:action/:start/:end', function(req, res, next) {
 
   }).then(function(user) {
 
+		if (!user) return res.sendStatus(404);
 		// To accomodate different date formats for different endpoints.
     if ( !config.get('nokia_api_data.START')[req.params.action].includes("ymd") && (!util.unixTimestamp(req.params.start) || !util.unixTimestamp(req.params.end) ) ) {
 
