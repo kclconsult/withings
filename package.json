@@ -8,14 +8,20 @@
     "test": "mocha --exit"
   },
   "dependencies": {
+    "amqplib": "^0.5.5",
+    "async": "^3.2.0",
     "basic-auth": "^2.0.1",
     "body-parser": "^1.19.0",
+    "config": "^3.3.1",
     "cookie-parser": "^1.4.5",
+    "csv-parse": "^4.9.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "http-errors": "^1.7.3",
+    "json-find": "^2.0.7",
     "morgan": "^1.10.0",
     "mysql2": "^2.1.0",
     "pug": "^2.0.4",
@@ -24,7 +30,9 @@
     "sequelize": "^5.21.7",
     "sequelize-cli": "^5.5.1",
     "serve-favicon": "^2.5.0",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^4.2.0",
+    "uuid": "^8.0.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const request = require('request');
+const uuid = require('uuid');
 const uuidv1 = require('uuid/v1');
 const config = require('config');
 const logger = require('../config/winston');

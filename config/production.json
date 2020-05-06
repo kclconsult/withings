@@ -1,5 +1,4 @@
 {
-
   "dbConfig": {
     "username": "user",
     "password": "password",
@@ -7,15 +6,12 @@
     "host": "device-integration_nokia_mariadb_1",
     "dialect": "mysql"
   },
-
   "sensor_to_fhir": {
     "URL": "http://sensor-fhir-mapper_webapp-queue_1:3002"
   },
-
   "message_queue": {
     "ACTIVE": true,
     "HOST": "sensor-fhir-mapper_rabbit_1",
     "NAME": "device-integration_nokia-sensor-fhir-mapper"
   }
-
 }

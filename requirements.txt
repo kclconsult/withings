@@ -18,6 +18,5 @@ mysql2
 config
 uuid
 csv-parse
-fs
 winston
 basic-auth
