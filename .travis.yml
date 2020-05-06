@@ -3,5 +3,3 @@ node_js:
   - "14"
 env:
   - NODE_ENV=test
-git:
-  submodules: false

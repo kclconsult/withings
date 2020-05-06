@@ -1,5 +1,7 @@
 module.exports = {
-
+  message_queue: {
+    ACTIVE: "false"
+  },
   dbConfig: {
     dialect: "sqlite",
     storage: "db.test.sqlite"
