@@ -7,6 +7,8 @@ const config = require('config');
 const parse = require('csv-parse');
 const fs = require('fs');
 
+const PRACTITIONER_ID = "da6da8b0-56e5-11e9-8d7b-95e10210fac3";
+
 module.exports = function(messageObject) {
 
 	/**
@@ -27,20 +29,11 @@ module.exports = function(messageObject) {
 
 	router.get('/incomingBP', function(req, res, next) {
 
-		res.send("Please supply patient and practitioner ID.");
+		res.send("Please supply at least patient ID, or patient ID and practitioner ID.");
 
 	});
 
-	/**
-	 * @api {get} /simulate/:simulationType/:patientID/:practitionerID Simulate a set of incoming blood pressure values or a specific BP alert.
-	 * @apiName simulateBP
-	 * @apiGroup Simulate
-	 *
-	 * @apiParam {String} simulationType [incomingBP|amberDia|amberSys|amberDiaSys|redDia|redSys|redDiaSys|doubleRedDia|doubleRedSys|doubleRedDiaSys]
-	 * @apiParam {String} patientID Patient unique ID.
-	 * @apiParam {String} practitionerID Practitioner unique ID.
-	 */
-	router.get('/:simulationType/:patientID/:practitionerID', function(req, res, next) {
+	function sendBPData(simulationType, patientID, practitionerID, callback) {
 
 		const parser = parse({delimiter: ' '}, function (err, data) {
 
@@ -62,8 +55,8 @@ module.exports = function(messageObject) {
 
 					jsonRow.reading = "BP";
 					jsonRow.id = uuidv1();
-					jsonRow.subjectReference = req.params.patientID;
-					jsonRow.practitionerReference = req.params.practitionerID;
+					jsonRow.subjectReference = patientID;
+					jsonRow.practitionerReference = practitionerID;
 
 					row.forEach(function(entry) {
 
@@ -75,7 +68,7 @@ module.exports = function(messageObject) {
 
 				}, function(err) {
 
-					res.sendStatus(200);
+					callback(200);
 
 				});
 
@@ -87,7 +80,7 @@ module.exports = function(messageObject) {
 
 		});
 
-		const SIMULATION_PATH = "routes/sample-data/" + req.params.simulationType + ".csv";
+		const SIMULATION_PATH = "routes/sample-data/" + simulationType + ".csv";
 
 		if ( fs.existsSync(SIMULATION_PATH) ) {
 
@@ -95,9 +88,46 @@ module.exports = function(messageObject) {
 
 		} else {
 
-			res.sendStatus(404);
+			callback(404);
 
 		}
+
+	}
+
+	/**
+	 * @api {get} /simulate/:simulationType/:patientID/:practitionerID Simulate a set of incoming blood pressure values or a specific BP alert.
+	 * @apiName simulateBP
+	 * @apiGroup Simulate
+	 *
+	 * @apiParam {String} simulationType [incomingBP|amberDia|amberSys|amberDiaSys|redDia|redSys|redDiaSys|doubleRedDia|doubleRedSys|doubleRedDiaSys]
+	 * @apiParam {String} patientID Patient unique ID.
+	 * @apiParam {String} practitionerID Practitioner unique ID.
+	 */
+	router.get('/:simulationType/:patientID/:practitionerID', function(req, res, next) {
+
+		sendBPData(req.params.simulationType, req.params.patientID, req.params.practitionerID, function(status) {
+
+			res.sendStatus(status);
+
+		});
+
+	});
+
+	/**
+	 * @api {get} /simulate/:simulationType/:patientID/:practitionerID Simulate a set of incoming blood pressure values or a specific BP alert.
+	 * @apiName simulateBP
+	 * @apiGroup Simulate
+	 *
+	 * @apiParam {String} simulationType [incomingBP|amberDia|amberSys|amberDiaSys|redDia|redSys|redDiaSys|doubleRedDia|doubleRedSys|doubleRedDiaSys]
+	 * @apiParam {String} patientID Patient unique ID.
+	 */
+	router.get('/:simulationType/:patientID', function(req, res, next) {
+
+		sendBPData(req.params.simulationType, req.params.patientID, PRACTITIONER_ID, function(status) {
+
+			res.sendStatus(status);
+
+		});
 
 	});
 
