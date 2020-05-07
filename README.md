@@ -4,9 +4,11 @@
 
 Middleware designed to improve interactions with the Withings (Nokia Health) API, and thus Withings devices.
 
-Part of the [CONSULT](https://consult.kcl.ac.uk/) architecture (device-intergration_nokia):
+Part of the [CONSULT](https://consult.kcl.ac.uk/) architecture (device-intergration_nokia), a collaborative mobile decision-support system to help patients suffering from chronic diseases with multiple morbidities self-manage their treatment:
 
 <img src="consult.png">
+
+Cite as _[Computational argumentation-based clinical decision support](https://dl.acm.org/doi/pdf/10.5555/3306127.3332107?download=true). Chapman, Martin et al.. Proceedings of the 18th International Conference on Autonomous Agents and MultiAgent Systems. 2019._
 
 ## Getting Started
 
@@ -18,7 +20,7 @@ Before starting, [download and install python](https://www.python.org/downloads/
 
 ### Other service communication
 
-Sends messages to: sensor-fhir-mapper ([install](https://github.kcl.ac.uk/consult/sensor-fhir-mapper/blob/master/README.md)).
+Sends messages to: sensor-fhir-converter ([install](https://github.kcl.ac.uk/consult/sensor-fhir-converter/blob/master/README.md)).
 
 ## Download
 
@@ -41,7 +43,7 @@ git submodule init
 git submodule update
 ```
 
-NB: If cloning over HTTPS, edit [.gitmodules](.gitmodules) to reflect the HTTPS URL before running update, and then sync with `git submodule sync` before updating.
+NB. If cloning over HTTPS, edit [.gitmodules](.gitmodules) to reflect the HTTPS URL before running update, and then sync with `git submodule sync` before updating.
 
 ## Documentation
 
@@ -61,10 +63,10 @@ git push
 
 ## Configuration
 
-Modify `config/default.js` to include the address of the [sensor-fhir-mapper service](https://github.kcl.ac.uk/consult/sensor-fhir-mapper), callback base and other API endpoints, e.g.:
+Modify `config/default.js` to include the address of the [sensor-fhir-converter service](https://github.kcl.ac.uk/consult/sensor-fhir-converter), callback base and other API endpoints, e.g.:
 
 ```
-SENSOR_TO_FHIR_URL: '[sensor-fhir-mapper service]'
+SENSOR_TO_FHIR_URL: '[sensor-fhir-converter service]'
 ```
 
 If using a queue, also specify this in the config file, and supply the queue name.
