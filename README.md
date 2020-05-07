@@ -4,7 +4,7 @@
 
 Middleware designed to improve interactions with the Withings (Nokia Health) API, and thus Withings devices.
 
-Part of the [CONSULT](https://consult.kcl.ac.uk/) architecture (_device-intergration_nokia_), a collaborative mobile decision-support system to help patients suffering from chronic diseases with multiple morbidities self-manage their treatment:
+Operates as part of the [CONSULT architecture](https://arxiv.org/pdf/1911.12254.pdf) (_device-intergration_nokia_), a collaborative mobile decision-support system to help patients suffering from chronic diseases with multiple morbidities self-manage their treatment:
 
 <img src="consult.png">
 
@@ -93,6 +93,7 @@ Where [username] and [password] are credentials to secure this service, and [key
 [Setup db encryption keys](https://mariadb.com/kb/en/file-key-management-encryption-plugin/) in `db`.
 
 Migrations can be reverse engineered from model updates using the [makemigration](https://www.npmjs.com/package/sequelize-auto-migrations) command.
+
 ## Running
 
 Ensure you are in the root folder. Create a node virtual environment (within a python virtual environment), and activate it:
