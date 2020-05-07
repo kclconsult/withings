@@ -1,6 +1,6 @@
 # Nokia Health (device-integration_nokia)
 
-[![Build Status](https://travis-ci.org/consult-kcl/nokia-health.svg?branch=nokia)](https://travis-ci.org/consult-kcl/nokia-health)
+[![Build Status](https://travis-ci.org/kclconsult/withings.svg?branch=master)](https://travis-ci.org/kclconsult/withings)
 
 Middleware designed to improve interactions with the Nokia Health API, and thus Nokia Health devices.
 
