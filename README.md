@@ -4,7 +4,7 @@
 
 Middleware designed to improve interactions with the Withings (Nokia Health) API, and thus Withings devices.
 
-Operates as part of the [CONSULT architecture](https://arxiv.org/pdf/1911.12254.pdf) (_device-intergration_nokia_), a collaborative mobile decision-support system to help patients suffering from chronic diseases with multiple morbidities self-manage their treatment:
+Operates as part of the [CONSULT architecture](https://dl.acm.org/doi/pdf/10.5555/3306127.3332107?download=true) (_device-intergration_nokia_), a collaborative mobile decision-support system to help patients suffering from chronic diseases with multiple morbidities self-manage their treatment:
 
 <img src="consult.png">
 
