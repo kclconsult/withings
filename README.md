@@ -1,8 +1,12 @@
-# Nokia Health (device-integration_nokia)
+# Withings (Nokia Health)
 
 [![Build Status](https://travis-ci.org/kclconsult/withings.svg?branch=master)](https://travis-ci.org/kclconsult/withings)
 
-Middleware designed to improve interactions with the Nokia Health API, and thus Nokia Health devices.
+Middleware designed to improve interactions with the Withings (Nokia Health) API, and thus Withings devices.
+
+Part of the [CONSULT](https://consult.kcl.ac.uk/) architecture (device-intergration_nokia):
+
+<img src="consult.png">
 
 ## Getting Started
 
@@ -21,13 +25,13 @@ Sends messages to: sensor-fhir-mapper ([install](https://github.kcl.ac.uk/consul
 (Recommended) [Create an SSH key](https://help.github.com/en/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) and clone this repository.
 
 ```
-git clone git@github.kcl.ac.uk:consult/device-integration_nokia.git
+git clone git@github.com:kclconsult/withings.git
 ```
 
 (Alternative) Clone this repository using HTTPs, suppling username and password:
 
 ```
-git clone https://github.kcl.ac.uk/consult/device-integration_nokia.git
+git clone https://github.com/kclconsult/withings.git
 ```
 
 Configure submodules:
@@ -41,7 +45,7 @@ NB: If cloning over HTTPS, edit [.gitmodules](.gitmodules) to reflect the HTTPS 
 
 ## Documentation
 
-[View](https://github.kcl.ac.uk/pages/consult/device-integration_nokia/).
+[View](https://kclconsult.github.io/withings/).
 
 ## Editing
 
@@ -184,5 +188,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Nokia's original health API [https://developer.health.nokia.com/api](https://developer.health.nokia.com/api).
-* MaraiDB encryption guide [https://mariadb.com/kb/en/library/file-key-management-encryption-plugin/](https://mariadb.com/kb/en/library/file-key-management-encryption-plugin/).
+* Nokia's original health API: [https://developer.health.nokia.com/api](https://developer.health.nokia.com/api).
+* MaraiDB encryption guide: [https://mariadb.com/kb/en/library/file-key-management-encryption-plugin/](https://mariadb.com/kb/en/library/file-key-management-encryption-plugin/).
