@@ -11,7 +11,7 @@
   },
   "message_queue": {
     "ACTIVE": true,
-    "HOST": "sensor-fhir-mapper_rabbit_1",
-    "NAME": "device-integration_nokia-sensor-fhir-mapper"
+    "HOST": "sensor-fhir-converter_rabbit_1",
+    "NAME": "device-integration_nokia-sensor-fhir-converter"
   }
 }

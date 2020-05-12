@@ -4,6 +4,7 @@ services:
 
   proxy:
     build:
+      dockerfile: Dockerfile.demo
       context: ./proxy
     command: ["./wait-for-it.sh", "--timeout=0", "device-integration_nokia_webapp_1:3000", "--", "nginx", "-g", "daemon off;"]
     tty: true
