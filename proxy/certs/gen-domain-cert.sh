@@ -3,7 +3,7 @@ set -eu
 org=consult-ca
 domain=stacy # Replace with host name
 
-openssl genpkey -algorithm RSA -out "$domain".key
+openssl genpkey -algorithm RSA -out "$domain".key -pkeyopt rsa_keygen_bits:4096
 openssl req -new -key "$domain".key -out "$domain".csr \
     -subj "/CN=$domain/O=$org"
 
