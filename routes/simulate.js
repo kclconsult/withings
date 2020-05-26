@@ -49,6 +49,14 @@ module.exports = function(messageObject) {
 
 				headers = dataArray.shift();
 
+				if ( config.get('simulate.TIME_SHIFT') ) {
+
+					dataArray = dataArray.slice(0, 365);
+					var simulatedReadingDate = new Date();
+					simulatedReadingDate.setDate(simulatedReadingDate.getDate() - dataArray.length);
+
+				}
+
 				async.eachSeries(dataArray, function (row, next){
 
 					var jsonRow = {};
@@ -60,10 +68,19 @@ module.exports = function(messageObject) {
 
 					row.forEach(function(entry) {
 
-						jsonRow[headers[row.indexOf(entry)]] = entry;
+						if ( config.get('simulate.TIME_SHIFT') && headers[row.indexOf(entry)] == "effectiveDateTime" ) {
+
+							jsonRow["effectiveDateTime"] = simulatedReadingDate;
+
+						} else {
+
+							jsonRow[headers[row.indexOf(entry)]] = entry;
+
+						}
 
 					});
 
+					if ( config.get('simulate.TIME_SHIFT') ) simulatedReadingDate.setDate(simulatedReadingDate.getDate() + 1);
 					messageObject.send(config.get('sensor_to_fhir.URL') + "/create/bp", jsonRow).then(() => next());
 
 				}, function(err) {
@@ -122,6 +139,16 @@ module.exports = function(messageObject) {
 	 * @apiParam {String} patientID Patient unique ID.
 	 */
 	router.get('/:simulationType/:patientID', function(req, res, next) {
+
+		sendBPData(req.params.simulationType, req.params.patientID, PRACTITIONER_ID, function(status) {
+
+			res.sendStatus(status);
+
+		});
+
+	});
+
+	router.post('/:simulationType/:patientID', function(req, res, next) {
 
 		sendBPData(req.params.simulationType, req.params.patientID, PRACTITIONER_ID, function(status) {
 

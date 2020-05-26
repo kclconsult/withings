@@ -1,6 +1,9 @@
 module.exports = {
+  simulate: {
+    TIME_SHIFT: true
+  },
   message_queue: {
-    ACTIVE: "false"
+    ACTIVE: false
   },
   dbConfig: {
     dialect: "sqlite",
