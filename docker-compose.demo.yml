@@ -21,7 +21,7 @@ services:
 
   migration:
     image: device-integration_nokia_webapp:latest
-    command: ["./wait-for-it.sh", "--timeout=0", "device-integration_nokia_mysql_1:3306", "--", "npm", "run", "migrate"]
+    command: ["./wait-for-it.sh", "--timeout=0", "device-integration_nokia_mariadb_1:3306", "--", "npm", "run", "migrate"]
     depends_on:
       - webapp
       - mariadb
