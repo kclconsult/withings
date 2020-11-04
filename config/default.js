@@ -20,7 +20,7 @@ module.exports = {
   	NOKIA_CONSUMER_SECRET: process.env.NOKIA_CONSUMER_SECRET
   },
   nokia_api: {
-    CALLBACK_BASE: "https://device.consultproject.co.uk",
+    CALLBACK_BASE: "https://device.consultsystem.co.uk",
   	NOKIA_REQUEST_TOKEN_BASE: "https://developer.health.nokia.com/account/request_token",
   	NOKIA_AUTHORISATION_BASE: "https://developer.health.nokia.com/account/authorize",
   	NOKIA_AUTHORISATION_BASE_V2: "https://account.withings.com/oauth2_user/authorize2",
