@@ -22,6 +22,7 @@
     "express-session": "^1.17.1",
     "http-errors": "^1.7.3",
     "json-find": "^2.0.7",
+    "messages": "file:lib/messages",
     "morgan": "^1.10.0",
     "mysql2": "^2.1.0",
     "pug": "^2.0.4",

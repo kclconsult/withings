@@ -10,6 +10,8 @@ Operates as part of the [CONSULT architecture](https://dl.acm.org/doi/pdf/10.555
 
 Cite as _[Computational argumentation-based clinical decision support](https://dl.acm.org/doi/pdf/10.5555/3306127.3332107?download=true). Chapman, Martin et al.. Proceedings of the 18th International Conference on Autonomous Agents and MultiAgent Systems. 2019._
 
+Try a [live demo](https://kclhi.org/consult/demo/?a=UGU2YmFxRUQ6dWtlN2JQRXk=).
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
