@@ -25,7 +25,7 @@
     "messages": "file:lib/messages",
     "morgan": "^1.10.0",
     "mysql2": "^2.1.0",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "querystring": "^0.2.0",
     "request": "^2.88.2",
     "sequelize": "^5.21.9",
