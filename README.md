@@ -88,9 +88,13 @@ NOKIA_CONSUMER_KEY="[key]"
 NOKIA_SECRET="[secret]"
 NOKIA_CLIENT_ID="[client]"
 NOKIA_CONSUMER_SECRET="[consumer]"
+MYSQL_ROOT_PASSWORD="[mysql_root_password]"
+MYSQL_DATABASE="[mysql_database]"
+MYSQL_USER="[mysql_user]"
+MYSQL_PASSWORD="[mysql_password]"
 ```
 
-Where [username] and [password] are credentials to secure this service, and [key], [secret], [client] and [consumer] are your Nokia details.
+Where [username] and [password] are credentials to secure this service; [key], [secret], [client] and [consumer] are your Nokia details; and [mysql_*] refers to DB credentials.
 
 [Setup db encryption keys](https://mariadb.com/kb/en/file-key-management-encryption-plugin/) in `db`.
 

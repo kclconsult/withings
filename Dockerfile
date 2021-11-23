@@ -1,12 +1,11 @@
 FROM node:11
 ENV user node
-COPY package.json /home/$user/
-COPY . /home/$user/
-WORKDIR /home/$user
-RUN chown $user --recursive .
 USER $user
-RUN npm install --only=production
-COPY ./bin/wait-for-it.sh wait-for-it.sh
+WORKDIR /home/$user
+COPY --chown=$user:$user package.json .
+COPY --chown=$user:$user lib/messages ./lib/messages
 ENV NODE_ENV production
+RUN npm ci --only=production --loglevel=silly
+COPY --chown=$user:$user . .
 EXPOSE 3000
 CMD ["npm", "start"]

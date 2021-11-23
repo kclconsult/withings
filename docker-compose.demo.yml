@@ -12,12 +12,14 @@ services:
       - '3000:443'
     depends_on:
       - webapp
+    restart: unless-stopped
 
   webapp:
     build:
       context: .
     depends_on:
       - mariadb
+    restart: unless-stopped
 
   migration:
     image: device-integration_nokia_webapp:latest
@@ -35,6 +37,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - sensor_data_volume:/var/lib/mysql
+    restart: unless-stopped
 
 volumes:
   sensor_data_volume:
