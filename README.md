@@ -1,7 +1,5 @@
 # Withings (Nokia Health)
 
-[![Build Status](https://travis-ci.org/kclconsult/withings.svg?branch=master)](https://travis-ci.org/kclconsult/withings)
-
 Middleware designed to improve interactions with the Withings (Nokia Health) API, and thus Withings devices.
 
 Operates as part of the [CONSULT architecture](https://dl.acm.org/doi/pdf/10.5555/3306127.3332107?download=true) (_device-intergration_nokia_), a collaborative mobile decision-support system to help patients suffering from chronic diseases with multiple morbidities self-manage their treatment:
