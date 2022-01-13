@@ -47,10 +47,6 @@ function storeAccessToken(req, res, callback) {
 
     }
 
-  }).error(function(err) {
-
-    logger.error(err);
-
   }).then(function() {
 
     if ( config.get('nokia_api.CONVERT_OAUTH') ) {

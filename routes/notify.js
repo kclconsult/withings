@@ -42,6 +42,8 @@ module.exports = function(messageObject) {
 	router.post('/', function(req, res, next) {
 
 		logger.info("Received notification.");
+    // Always send 200 to keep Nokia happy.
+		res.sendStatus(200);
 
 		models.notifications.create({
 
@@ -159,9 +161,6 @@ module.exports = function(messageObject) {
 			util.noParse("notification for user id", ["body", "userid"], req);
 
 		}
-
-		// Always send 200 to keep Nokia happy.
-		res.sendStatus(200);
 
 	});
 
