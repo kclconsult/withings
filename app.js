@@ -61,27 +61,27 @@ function init() {
     
     amqp.connect('amqp://' + config.get('message_queue.HOST')).then(function(connection) {
     
-    logger.info("Connected to " + config.get('message_queue.HOST'));
-    router.use('/simulate', simulate(new messages.QueueMessage(connection, config.get('message_queue.NAME'))));
-    router.use('/notify', notify(new messages.QueueMessage(connection, config.get('message_queue.NAME'))))
-    // Start once connected.
+      logger.info("Connected to " + config.get('message_queue.HOST'));
+      router.use('/simulate', simulate(new messages.QueueMessage(connection, config.get('message_queue.NAME'))));
+      router.use('/notify', notify(new messages.QueueMessage(connection, config.get('message_queue.NAME'))))
+      // Start once connected.
+      start();
+      
+    }).catch(function(error) {
+    
+      logger.info(error);
+      // Retry connection if server is not ready.
+      setTimeout(init, 5000);
+      
+    });
+  
+  } else {
+    
+    router.use('/simulate', simulate(new messages.HTTPMessage()));
+    router.use('/notify', notify(new messages.HTTPMessage()));
     start();
     
-  }).catch(function(error) {
-    
-    logger.info(error);
-    // Retry connection if server is not ready.
-    setTimeout(init, 5000);
-    
-  });
-  
-} else {
-  
-  router.use('/simulate', simulate(new messages.HTTPMessage()));
-  router.use('/notify', notify(new messages.HTTPMessage()));
-  start();
-  
-}
+  }
 
 }
 
