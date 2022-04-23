@@ -4,7 +4,7 @@ const router = express.Router();
 const async = require('async');
 const { v1: uuidv1 } = require('uuid');
 const config = require('config');
-const parse = require('csv-parse');
+const {parse} = require('csv-parse')
 const fs = require('fs');
 
 const PRACTITIONER_ID = "da6da8b0-56e5-11e9-8d7b-95e10210fac3";
