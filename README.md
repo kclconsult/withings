@@ -94,7 +94,7 @@ MYSQL_PASSWORD="[mysql_password]"
 
 Where [username] and [password] are credentials to secure this service; [key], [secret], [client] and [consumer] are your Nokia details; and [mysql_*] refers to DB credentials.
 
-[Setup db encryption keys](https://mariadb.com/kb/en/file-key-management-encryption-plugin/) in `db`.
+Run [db/encrypt/keys/db-encryption.sh](db/encrypt/keys/db-encryption.sh).
 
 Migrations can be reverse engineered from model updates using the [makemigration](https://www.npmjs.com/package/sequelize-auto-migrations) command.
 
