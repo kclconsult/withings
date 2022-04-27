@@ -7,10 +7,10 @@ module.exports = {
     dialect: "mysql"
   },
   sensor_to_fhir: {
-    URL: "http://sensor-fhir-mapper_webapp-queue_1:3002"
+    URL: "http://sensor-fhir-converter_webapp-queue_1:3002"
   },
   message_queue: {
-    ACTIVE: false,
+    ACTIVE: true,
     HOST: "sensor-fhir-converter_rabbit_1",
     NAME: "device-integration_nokia-sensor-fhir-converter"
   }
