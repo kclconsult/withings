@@ -6,6 +6,8 @@ services:
     build:
       dockerfile: Dockerfile.demo
       context: ./proxy
+    image: device-integration_nokia_proxy:latest
+    container_name: device-integration_nokia_proxy_1
     command: ["./wait-for-it.sh", "--timeout=0", "device-integration_nokia_webapp_1:3000", "--", "nginx", "-g", "daemon off;"]
     tty: true
     ports:
@@ -17,6 +19,8 @@ services:
   webapp:
     build:
       context: .
+    image: device-integration_nokia_webapp:latest
+    container_name: device-integration_nokia_webapp_1
     depends_on:
       - mariadb
     restart: unless-stopped
@@ -30,6 +34,8 @@ services:
 
   mariadb:
     build: db
+    image: device-integration_nokia_mariadb:latest
+    container_name: device-integration_nokia_mariadb_1
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -41,6 +47,7 @@ services:
 
 volumes:
   sensor_data_volume:
+    name: device-integration_nokia_sensor_data_volume
 
 networks:
   default:
