@@ -28,7 +28,7 @@
     "pug": "^3.0.2",
     "querystring": "^0.2.0",
     "request": "^2.88.2",
-    "sequelize": "^6.11.0",
+    "sequelize": "^6.29.0",
     "sequelize-cli": "^6.3.0",
     "serve-favicon": "^2.5.0",
     "uuid": "^8.3.2",
